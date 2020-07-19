@@ -522,16 +522,15 @@ inoreabbrev gdox            /**<left><backspace><right><cr>@brief<cr>@author Kim
 " augroup bradkim06group ---------------------- {{{
 augroup bradkim06group
     autocmd!
-    autocmd BufWritePre,BufRead * :normal gg=G''
-    autocmd FileType c,cpp :RainbowToggleOn
-    autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab
+    " autocmd BufWritePre,BufRead * :normal gg=G''
+    autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab | :RainbowToggleOn
     autocmd InsertEnter * set cul
     autocmd InsertLeave * set nocul
-    " c
     " Automatically source vimrc on save.
     autocmd! bufwritepost $MYVIMRC source $MYVIMRC
     " let terminal resize scale the internal windows
     autocmd VimResized * :wincmd =
+    " Enable Folding vim
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
 "}}}
