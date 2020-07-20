@@ -522,7 +522,7 @@ inoreabbrev gdox            /**<left><backspace><right><cr>@brief<cr>@author Kim
 " augroup bradkim06group ---------------------- {{{
 augroup bradkim06group
     autocmd!
-    " autocmd BufWritePre,BufRead * :normal gg=G''
+    autocmd BufWritePre * :normal gg=G''
     autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab | :RainbowToggleOn
     autocmd InsertEnter * set cul
     autocmd InsertLeave * set nocul
@@ -573,6 +573,8 @@ let g:NERDToggleCheckAllLines = 1
 noremap <C-s> :Ag! <C-R><C-W><cr>
 " FZF File
 nnoremap <C-p> :Files!<Cr>
+" Empty value to disable preview window altogether
+let g:fzf_preview_window = ''
 " Always enable preview window on the right with 50% width
 let g:fzf_preview_window = 'right:50%'
 " Example echo word on under the cursor

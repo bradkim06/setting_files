@@ -3,8 +3,9 @@ ZSH_THEME="agnoster"
 
 # source $ZSH/oh-my-zsh.sh
 
-export PATH=$HOME/bin:/usr/local/bin:$PATH#
+export PATH=$HOME/bin:/usr/local/bin:/usr/bin$PATH
 export EDITOR=/usr/local/bin/nvim
+export ZSH="/home/bradkim06/.oh-my-zsh"
 # export PATH="/usr/local/anaconda3/bin:$PATH"
 # export PATH="/usr/local/opt/llvm/bin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/llvm/lib"
@@ -21,8 +22,8 @@ alias ll="tree -C -L 1 --dirsfirst"
 # Using highlight (http://www.andre-simon.de/doku/highlight/en/highlight.html)
 export FZF_DEFAULT_OPTS='--no-height --no-reverse'
 # export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C -L 2 --dirsfirst {}) 2> /dev/null | head -200'"
-export FZF_CTRL_T_OPTS="--preview '(bat --style=numbers --color=always --line-range :500 {} || tree -A -C -D -L 1 --sort=name --dirsfirst {} ) 2> /dev/null | head -200'"
-export FZF_ALT_C_OPTS="--preview '(tree -d -S -C -D -L 2 --sort=name --dirsfirst {} ) | head -200'"
+export FZF_CTRL_T_OPTS="--preview '(bat --style=numbers --color=always --line-range :500 {} || tree -C -L 1 --sort=name --dirsfirst {} ) 2> /dev/null | head -200'"
+export FZF_ALT_C_OPTS="--preview '(tree -d -C -L 2 --sort=name --dirsfirst {} ) | head -200'"
 
 plugins=(
     git
