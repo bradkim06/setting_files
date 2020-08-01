@@ -1,4 +1,4 @@
-" vim-bootstrap 
+" vim-bootstrap
 
 "*****************************************************************************
 "" Vim-PLug core
@@ -66,6 +66,8 @@ Plug 'xolox/vim-session'
 
 "" Color
 Plug 'tomasr/molokai'
+Plug 'morhetz/gruvbox'
+Plug 'joshdick/onedark.vim'
 
 " smooth scroll
 Plug 'terryma/vim-smooth-scroll'
@@ -82,6 +84,9 @@ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
 " commenter
 Plug 'preservim/nerdcommenter'
+
+" MarkDown Preview
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
@@ -101,8 +106,8 @@ Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
 "*****************************************************************************
 
 "" Include user's extra bundle
-if filereadable(expand("~/.config/nvim/local_bundles.vim"))
-    source ~/.config/nvim/local_bundles.vim
+if filereadable(expand("~/.config/nvim/bundle/DoxygenToolkit.vim"))
+    source ~/.config/nvim/bundle/DoxygenToolkit.vim
 endif
 
 call plug#end()
@@ -144,7 +149,6 @@ set smartcase
 
 set fileformats=unix,dos,mac
 
-
 if exists('$SHELL')
     set shell=$SHELL
 else
@@ -164,9 +168,16 @@ syntax on
 " set ruler
 set number
 
-let no_buffers_menu=1
+" let no_buffers_menu=1
+
+let g:rehash256 = 1
 silent! colorscheme molokai
+
+" let g:gruvbox_contrast_dark='hard'
 " silent! colorscheme gruvbox
+
+" let g:onedark_hide_endofbuffer=1
+" silent! colorscheme onedark
 
 set mousemodel=popup
 set t_Co=256
@@ -359,6 +370,7 @@ if has('unnamedplus')
     set clipboard=unnamed,unnamedplus
 endif
 
+
 noremap YY "+y<CR>
 noremap <leader>p "+gP<CR>
 noremap XX "+x<CR>
@@ -367,6 +379,14 @@ if has('macunix')
     " pbcopy for OSX copy/paste
     vnoremap <C-x> :!pbcopy<CR>
     vnoremap <C-c> :w !pbcopy<CR><CR>
+else
+    let s:clip = '/mnt/c/Windows/System32/clip.exe'
+    if executable(s:clip)
+        augroup WSLYank
+            autocmd!
+            autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
+        augroup END
+    end
 endif
 
 "" Buffer nav
@@ -415,6 +435,9 @@ let g:airline#extensions#virtualenv#enabled = 1
 " Default highlight is better than polyglot
 let g:polyglot_disabled = ['python']
 let python_highlight_all = 1
+
+" markdown
+" let g:vim_markdown_folding_disabled = 1
 
 "*****************************************************************************
 "*****************************************************************************
@@ -504,6 +527,9 @@ nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
 nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
 " Exit Insert Mode
 inoremap jk <esc>
+" sort
+nnoremap <leader>= :normal gg=G''<cr>
+
 " Practice don't use <esc> in Inster Mode
 " inoremap <esc> <nop>
 " }}}
@@ -522,7 +548,7 @@ inoreabbrev gdox            /**<left><backspace><right><cr>@brief<cr>@author Kim
 " augroup bradkim06group ---------------------- {{{
 augroup bradkim06group
     autocmd!
-    autocmd BufWritePre * :normal gg=G''
+    " autocmd BufWritePre * :normal gg=G''
     autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab | :RainbowToggleOn
     autocmd InsertEnter * set cul
     autocmd InsertLeave * set nocul
@@ -559,7 +585,7 @@ let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
 
-" Enable NERDCommenterToggle to check all selected lines is commented or not 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 " }}}
 "*****************************************************************************
@@ -571,6 +597,7 @@ let g:NERDToggleCheckAllLines = 1
 "*****************************************************************************
 " FZF Rg
 noremap <C-s> :Ag! <C-R><C-W><cr>
+" noremap <C-s> :Ag! <cWORD> .<cr>
 " FZF File
 nnoremap <C-p> :Files!<Cr>
 " Empty value to disable preview window altogether
@@ -583,7 +610,7 @@ let g:fzf_preview_window = 'right:50%'
 "*****************************************************************************
 " vimrc bootstrap Settings
 "*****************************************************************************
-"" fzf.vim
+" fzf.vim
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
 let $FZF_DEFAULT_COMMAND =  "find * -path '*/\.*' -prune -o -path 'node_modules/**' -prune -o -path 'target/**' -prune -o -path 'dist/**' -prune -o  -type f -print -o -type l -print 2> /dev/null"
@@ -674,3 +701,32 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " }}}
+"*****************************************************************************
+"" DoxygenToolkit Settings
+"*****************************************************************************
+" DoxygenToolkit--------------------- {{{
+" let g:DoxygenToolkit_briefTag_pre="@Synopsis  "
+" let g:DoxygenToolkit_paramTag_pre="@Param "
+" let g:DoxygenToolkit_returnTag="@Returns  "
+let g:DoxygenToolkit_blockHeader="----------------------------------------------------------------------------"
+let g:DoxygenToolkit_blockFooter="----------------------------------------------------------------------------"
+" let g:DoxygenToolkit_blockHeader="============================================================================"
+" let g:DoxygenToolkit_blockFooter="============================================================================"
+let g:DoxygenToolkit_authorName="Kim Junsu"
+" let g:DoxygenToolkit_licenseTag="My own license"   <-- !!! Does not end with "\<enter>"
+"}}}
+"*****************************************************************************
+"" instant-markdown
+"*****************************************************************************
+" instant-markdown--------------------- {{{
+let g:instant_markdown_slow = 1
+let g:instant_markdown_autostart = 0
+" let g:instant_markdown_open_to_the_world = 1
+" let g:instant_markdown_allow_unsafe_content = 1
+" let g:instant_markdown_allow_external_content = 0
+" let g:instant_markdown_mathjax = 1
+" let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
+" let g:instant_markdown_autoscroll = 0
+" let g:instant_markdown_port = 8888
+" let g:instant_markdown_python = 1
+"}}}

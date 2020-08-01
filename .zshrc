@@ -1,11 +1,23 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+
 #Path to your oh-my-zsh installation.
-ZSH_THEME="agnoster"
-
-# source $ZSH/oh-my-zsh.sh
-
+# ZSH_THEME="agnoster"
+# ZSH_THEME="robbyrussell"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin$PATH
 export EDITOR=/usr/local/bin/nvim
 export ZSH="/home/bradkim06/.oh-my-zsh"
+
+# WSL Directory Color Change
+eval `dircolors ~/.dircolors`
+# LS_COLORS='ow=01;36;40'
+# export LS_COLORS
+
 # export PATH="/usr/local/anaconda3/bin:$PATH"
 # export PATH="/usr/local/opt/llvm/bin:$PATH"
 # export LDFLAGS="-L/usr/local/opt/llvm/lib"
@@ -13,17 +25,13 @@ export ZSH="/home/bradkim06/.oh-my-zsh"
 # export PYTHONSTARTUP="$(python -m jedi repl)"
 # export ZSH="/Users/bradkim06/.oh-my-zsh"
 
-alias vim="nvim"
-alias vi="nvim"
-alias vimdiff="nvim -d"
-alias cat="bat"
-alias ll="tree -C -L 1 --dirsfirst"
-
 # Using highlight (http://www.andre-simon.de/doku/highlight/en/highlight.html)
 export FZF_DEFAULT_OPTS='--no-height --no-reverse'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 # export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C -L 2 --dirsfirst {}) 2> /dev/null | head -200'"
 export FZF_CTRL_T_OPTS="--preview '(bat --style=numbers --color=always --line-range :500 {} || tree -C -L 1 --sort=name --dirsfirst {} ) 2> /dev/null | head -200'"
 export FZF_ALT_C_OPTS="--preview '(tree -d -C -L 2 --sort=name --dirsfirst {} ) | head -200'"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 plugins=(
     git
@@ -33,18 +41,25 @@ plugins=(
     fasd
 )
 
-prompt_context() {
-    if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-        prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
-    fi
+source $ZSH/oh-my-zsh.sh
 
-  # Custom (Random emoji)
-  emojis=("⚡️" "🔥" "🇰" "👑" "😎" "🐸" "🐵" "🦄" "🌈" "🍻" "🚀" "💡" "🎉" "🔑" "🚦" "🌙")
-  RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
-  prompt_segment black default "김준수 ${emojis[$RAND_EMOJI_N]} "
-}
+alias vim="nvim"
+alias vi="nvim"
+alias vimdiff="nvim -d"
+alias cat="bat"
+alias ll="tree -C -L 1 --dirsfirst"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# prompt_context() {
+#     if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+#         prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
+#     fi
+#
+#   # Custom (Random emoji)
+#   emojis=("⚡️" "🔥" "🇰" "👑" "😎" "🐸" "🐵" "🦄" "🌈" "🍻" "🚀" "💡" "🎉" "🔑" "🚦" "🌙")
+#   RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
+#   prompt_segment black default "김준수 ${emojis[$RAND_EMOJI_N]} "
+# }
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -157,3 +172,6 @@ prompt_context() {
 #         --preview-window=right:50%\
 #         --preview "bat --theme='OneHalfDark' --color=always --style=numbers --line-range :500 --color=always {}")
 # }
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
