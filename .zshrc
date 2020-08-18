@@ -6,9 +6,10 @@
 # fi
 
 #Path to your oh-my-zsh installation.
-# ZSH_THEME="agnoster"
+ZSH_THEME="agnoster"
 # ZSH_THEME="robbyrussell"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# ZSH_THEME="random"
+# ZSH_THEME="powerlevel10k/powerlevel10k"
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin$PATH
 export EDITOR=/usr/local/bin/nvim
 export ZSH="/home/bradkim06/.oh-my-zsh"
@@ -25,13 +26,6 @@ eval `dircolors ~/.dircolors`
 # export PYTHONSTARTUP="$(python -m jedi repl)"
 # export ZSH="/Users/bradkim06/.oh-my-zsh"
 
-# Using highlight (http://www.andre-simon.de/doku/highlight/en/highlight.html)
-export FZF_DEFAULT_OPTS='--no-height --no-reverse'
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-# export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C -L 2 --dirsfirst {}) 2> /dev/null | head -200'"
-export FZF_CTRL_T_OPTS="--preview '(bat --style=numbers --color=always --line-range :500 {} || tree -C -L 1 --sort=name --dirsfirst {} ) 2> /dev/null | head -200'"
-export FZF_ALT_C_OPTS="--preview '(tree -d -C -L 2 --sort=name --dirsfirst {} ) | head -200'"
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 plugins=(
     git
@@ -41,7 +35,13 @@ plugins=(
     fasd
 )
 
-source $ZSH/oh-my-zsh.sh
+# Using highlight (http://www.andre-simon.de/doku/highlight/en/highlight.html)
+export FZF_DEFAULT_OPTS='--no-height --no-reverse'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+# export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C -L 2 --dirsfirst {}) 2> /dev/null | head -200'"
+export FZF_CTRL_T_OPTS="--preview '(bat --style=numbers --color=always --line-range :500 {} || tree -C -L 1 --sort=name --dirsfirst {} ) 2> /dev/null | head -200'"
+export FZF_ALT_C_OPTS="--preview '(tree -d -C -L 2 --sort=name --dirsfirst {} ) | head -200'"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias vim="nvim"
 alias vi="nvim"
@@ -49,16 +49,6 @@ alias vimdiff="nvim -d"
 alias cat="bat"
 alias ll="tree -C -L 1 --dirsfirst"
 
-# prompt_context() {
-#     if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-#         prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
-#     fi
-#
-#   # Custom (Random emoji)
-#   emojis=("⚡️" "🔥" "🇰" "👑" "😎" "🐸" "🐵" "🦄" "🌈" "🍻" "🚀" "💡" "🎉" "🔑" "🚦" "🌙")
-#   RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
-#   prompt_segment black default "김준수 ${emojis[$RAND_EMOJI_N]} "
-# }
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -174,4 +164,15 @@ alias ll="tree -C -L 1 --dirsfirst"
 # }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+source $ZSH/oh-my-zsh.sh
+prompt_context() {
+  if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+    prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
+  fi
+}

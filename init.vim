@@ -3,24 +3,24 @@
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
-let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
-
-let g:vim_bootstrap_langs = "c,python"
-let g:vim_bootstrap_editor = "nvim"				" nvim or vim
-
-if !filereadable(vimplug_exists)
-    if !executable("curl")
-        echoerr "You have to install curl or first install vim-plug yourself!"
-        execute "q!"
-    endif
-    echo "Installing Vim-Plug..."
-    echo ""
-    silent exec "!\curl -fLo " . vimplug_exists . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    let g:not_finish_vimplug = "yes"
-
-    autocmd! bufwritepost .vimrc source %
-    autocmd VimEnter * PlugInstall
-endif
+" let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
+"
+" let g:vim_bootstrap_langs = "c,python"
+" let g:vim_bootstrap_editor = "nvim"				" nvim or vim
+"
+" if !filereadable(vimplug_exists)
+"     if !executable("curl")
+"         echoerr "You have to install curl or first install vim-plug yourself!"
+"         execute "q!"
+"     endif
+"     echo "Installing Vim-Plug..."
+"     echo ""
+"     silent exec "!\curl -fLo " . vimplug_exists . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+"     let g:not_finish_vimplug = "yes"
+"
+"     autocmd! bufwritepost .vimrc source %
+"     autocmd VimEnter * PlugInstall
+" endif
 
 " Required:
 call plug#begin(expand('~/.config/nvim/plugged'))
@@ -30,19 +30,12 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 "*****************************************************************************
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
-" Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
-Plug 'vim-scripts/grep.vim'
-Plug 'vim-scripts/CSApprox'
-Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
-Plug 'Yggdroot/indentLine'
-Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
-" Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
 
 if isdirectory('/usr/local/opt/fzf')
     Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -54,7 +47,6 @@ let g:make = 'gmake'
 if exists('make')
     let g:make = 'make'
 endif
-Plug 'Shougo/vimproc.vim', {'do': g:make}
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
@@ -76,8 +68,7 @@ Plug 'terryma/vim-smooth-scroll'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Rainbow
-" Plug 'frazrepo/vim-rainbow'
-Plug 'luochen1990/rainbow'
+" Plug 'luochen1990/rainbow'
 
 " Python Highlight
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
@@ -87,20 +78,19 @@ Plug 'preservim/nerdcommenter'
 
 " MarkDown Preview
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+
+" Auto pair
+Plug 'jiangmiao/auto-pairs'
+
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
 
-" c
-Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
-Plug 'ludwig/split-manpage.vim'
-
-
-" python
-"" Python Bundle
-" Plug 'davidhalter/jedi-vim'
-Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
-
+" html
+"" HTML Bundle
+Plug 'gko/vim-coloresque'
+Plug 'tpope/vim-haml'
+Plug 'mattn/emmet-vim'
 
 "*****************************************************************************
 "*****************************************************************************
@@ -115,7 +105,6 @@ call plug#end()
 " Required:
 filetype plugin indent on
 
-
 "*****************************************************************************
 "" [Basic Settings]
 "*****************************************************************************
@@ -129,9 +118,9 @@ set fileencodings=utf-8
 set backspace=indent,eol,start
 
 "" Tabs. May be overridden by autocmd rules
-set tabstop=4
+set tabstop=2
 set softtabstop=0
-set shiftwidth=4
+set shiftwidth=2
 set expandtab
 
 "" Map leader to ,
@@ -144,7 +133,7 @@ set hidden
 "" Searching
 set hlsearch
 set incsearch
-set ignorecase
+" set ignorecase
 set smartcase
 
 set fileformats=unix,dos,mac
@@ -164,19 +153,19 @@ let g:session_command_aliases = 1
 "*****************************************************************************
 "" Visual Settings
 "*****************************************************************************
-syntax on
 " set ruler
 set number
 
-" let no_buffers_menu=1
+let no_buffers_menu=1
 
-let g:rehash256 = 1
-silent! colorscheme molokai
+" let g:rehash256 = 1
+" silent! colorscheme molokai
 
-" let g:gruvbox_contrast_dark='hard'
-" silent! colorscheme gruvbox
+let g:gruvbox_contrast_dark='hard'
+silent! colorscheme gruvbox
 
 " let g:onedark_hide_endofbuffer=1
+" let g:onedark_termcolors=256
 " silent! colorscheme onedark
 
 set mousemodel=popup
@@ -184,20 +173,20 @@ set t_Co=256
 set guioptions=egmrti
 set gfn=Monospace\ 10
 
-if has("gui_running")
-    if has("gui_mac") || has("gui_macvim")
-        set guifont=Menlo:h12
-        set transparency=7
-    endif
-else
-    let g:CSApprox_loaded = 1
+" if has("gui_running")
+"     if has("gui_mac") || has("gui_macvim")
+"         set guifont=Menlo:h12
+"         set transparency=7
+"     endif
+" else
+    " let g:CSApprox_loaded = 1
 
     " IndentLine
-    let g:indentLine_enabled = 1
-    let g:indentLine_concealcursor = 0
-    let g:indentLine_char = '┆'
-    let g:indentLine_faster = 1
-endif
+    " let g:indentLine_enabled = 1
+    " let g:indentLine_concealcursor = 0
+    " let g:indentLine_char = '┆'
+    " let g:indentLine_faster = 1
+" endif
 
 
 
@@ -226,12 +215,13 @@ nnoremap N Nzzzv
 " endif
 
 " vim-airline
-let g:airline_theme = 'powerlineish'
-let g:airline#extensions#branch#enabled = 1
+let g:airline_theme = 'luna'
+" let g:airline#extensions#branch#enabled = 1
 " let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tagbar#enabled = 1
-let g:airline_skip_empty_sections = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
+" let g:airline#extensions#tagbar#enabled = 1
+" let g:airline_skip_empty_sections = 1
 
 "*****************************************************************************
 "" Abbreviations
@@ -257,14 +247,7 @@ let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeWinSize = 50
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
-" nnoremap <silent> <F2> :NERDTreeFind<CR>
 nnoremap <silent> <F3> :NERDTreeToggle<CR>
-
-" grep.vim
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
 
 "*****************************************************************************
 "" Commands
@@ -289,7 +272,9 @@ endif
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
     autocmd!
-    autocmd BufEnter * :syntax sync maxlines=200
+    " autocmd BufEnter,InsertLeave * :syntax sync maxlines=50
+    autocmd BufEnter,InsertLeave * :syntax sync fromstart
+    " autocmd BufEnter * :syntax sync fromstart
 augroup END
 
 "" Remember cursor position
@@ -321,16 +306,6 @@ set autoread
 noremap <Leader>h :<C-u>split<CR>
 noremap <Leader>v :<C-u>vsplit<CR>
 
-"" Git
-noremap <Leader>ga :Gwrite<CR>
-noremap <Leader>gc :Gcommit<CR>
-noremap <Leader>gsh :Gpush<CR>
-noremap <Leader>gll :Gpull<CR>
-noremap <Leader>gs :Gstatus<CR>
-noremap <Leader>gb :Gblame<CR>
-noremap <Leader>gd :Gvdiff<CR>
-noremap <Leader>gr :Gremove<CR>
-
 " session management
 nnoremap <leader>so :OpenSession<Space>
 nnoremap <leader>ss :SaveSession<Space>
@@ -338,22 +313,16 @@ nnoremap <leader>sd :DeleteSession<CR>
 nnoremap <leader>sc :CloseSession<CR>
 
 "" Tabs
-nnoremap <Tab> gt
-nnoremap <S-Tab> gT
-nnoremap <silent> <S-t> :tabnew<CR>
-nnoremap <silent> <leader>t :tabclose<CR>
+" nnoremap <Tab> gt
+" nnoremap <S-Tab> gT
+" nnoremap <silent> <S-t> :tabnew<CR>
+" nnoremap <silent> <leader>t :tabclose<CR>
 
 "" Set working directory
 nnoremap <leader>. :lcd %:p:h<CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-" snippets
-" let g:UltiSnipsExpandTrigger="<tab>"
-" let g:UltiSnipsJumpForwardTrigger="<tab>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-" let g:UltiSnipsEditSplit="vertical"
 
 " Tagbar
 nnoremap <silent> <F4> :TagbarToggle<CR>
@@ -390,14 +359,14 @@ else
 endif
 
 "" Buffer nav
-noremap <leader>z :bp<CR>
-noremap <leader>x :bn<CR>
+nnoremap <Tab> :bp<CR>
+nnoremap <S-Tab> :bn<CR>
 
 "" Close buffer
-noremap <leader>c :bd<CR>
+noremap <leader>z :bd<CR>
 
 "" Clean search (highlight)
-" nnoremap <silent> <leader><space> :noh<cr>
+nnoremap <silent> <leader><space> :noh<cr>
 
 "" Switching windows
 noremap <C-j> <C-w>j
@@ -412,9 +381,6 @@ vnoremap > >gv
 "" Move visual block
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-
-"" Open current line on GitHub
-" nnoremap <Leader>o :.Gbrowse<CR>
 
 "*****************************************************************************
 "" Custom configs
@@ -433,11 +399,15 @@ let g:airline#extensions#virtualenv#enabled = 1
 
 " Syntax highlight
 " Default highlight is better than polyglot
-let g:polyglot_disabled = ['python']
+let g:polyglot_disabled = ['python', 'markdown']
 let python_highlight_all = 1
 
 " markdown
 " let g:vim_markdown_folding_disabled = 1
+
+" html
+" for html files, 2 spaces
+autocmd Filetype html setlocal ts=2 sw=2 expandtab
 
 "*****************************************************************************
 "*****************************************************************************
@@ -493,20 +463,16 @@ noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 10, 3)<CR>
 noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 10, 3)<CR>
 
 "*****************************************************************************
-"" Rainbow
-"*****************************************************************************
-"set to 0 if you want to enable it later via :RainbowToggle
-let g:rainbow_active = 0
-"*****************************************************************************
 "" Vim basic option Settings
 "*****************************************************************************
 " Vim basic option Settings ---------------------- {{{
 " boolean
 set shiftround
+set nopaste
 set showmatch
 
 set mouse=a
-set matchtime=5
+set matchtime=2
 
 " }}}
 "*****************************************************************************
@@ -521,26 +487,30 @@ nnoremap <leader>ev         :edit $MYVIMRC<cr>
 nnoremap <leader>sv         :source $MYVIMRC<cr>
 
 " Paste toggle
-noremap <F2> :set paste!<cr>:set paste?<cr>
-" Surround the word
-nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
-nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
+nnoremap <F2> :set paste!<cr>:set paste?<cr>
+
 " Exit Insert Mode
 inoremap jk <esc>
 " sort
 nnoremap <leader>= :normal gg=G''<cr>
 
-" Practice don't use <esc> in Inster Mode
-" inoremap <esc> <nop>
+" delete no copy
+vnoremap x "_x
+
+" markdown keymapping
+nnoremap <leader>* viw<esc>a**<esc>bbi**<esc>lel
+nnoremap <leader>` viw<esc>a`<esc>bi`<esc>lel
+vnoremap <leader>` xi`<esc>pa`<esc>
+vnoremap <leader>* xa**<esc>pa** <esc>
+vnoremap <leader>`` xi```<cr>```<cr><esc>bbp
 " }}}
 "*****************************************************************************
 " Custom Abbreviations
 "*****************************************************************************
 " Custom Abbreviations ---------------------- {{{
 " add easy date insertion
-inoreabbrev ymd             <C-R>=strftime("%Y-%m-%d")<CR>
-" Create Doxygen Comment
-inoreabbrev gdox            /**<left><backspace><right><cr>@brief<cr>@author Kim Junsu<cr>@date<cr><backspace><backspace><backspace>
+inoreabbrev ymdt <C-R>=strftime("%Y-%m-%d %a %I:%M")<CR>
+inoreabbrev ymd <C-R>=strftime("%Y-%m-%d")<CR>
 " }}}
 "*****************************************************************************
 " augroup bradkim06group
@@ -553,7 +523,7 @@ augroup bradkim06group
     autocmd InsertEnter * set cul
     autocmd InsertLeave * set nocul
     " Automatically source vimrc on save.
-    autocmd! bufwritepost $MYVIMRC source $MYVIMRC
+    " autocmd! bufwritepost $MYVIMRC source $MYVIMRC
     " let terminal resize scale the internal windows
     autocmd VimResized * :wincmd =
     " Enable Folding vim
@@ -596,7 +566,7 @@ let g:NERDToggleCheckAllLines = 1
 " My FZF Settings
 "*****************************************************************************
 " FZF Rg
-noremap <C-s> :Ag! <C-R><C-W><cr>
+noremap <C-s> :Ag! <C-R><C-W>
 " noremap <C-s> :Ag! <cWORD> .<cr>
 " FZF File
 nnoremap <C-p> :Files!<Cr>
@@ -662,6 +632,7 @@ else
     set signcolumn=yes
 endif
 
+
 "" GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gr <Plug>(coc-references)
@@ -676,14 +647,15 @@ nmap <leader>rn <Plug>(coc-rename)
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
-if exists('*complete_info')
-    inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
@@ -728,5 +700,10 @@ let g:instant_markdown_autostart = 0
 " let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
 " let g:instant_markdown_autoscroll = 0
 " let g:instant_markdown_port = 8888
-" let g:instant_markdown_python = 1
+let g:instant_markdown_python = 1
 "}}}
+"
+
+"select all
+nnoremap <C-a> gg<S-v>G
+syntax enable
