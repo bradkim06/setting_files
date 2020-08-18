@@ -38,14 +38,14 @@ Plug 'majutsushi/tagbar'
 Plug 'sheerun/vim-polyglot'
 
 if isdirectory('/usr/local/opt/fzf')
-    Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+	Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 else
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-    Plug 'junegunn/fzf.vim'
+	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+	Plug 'junegunn/fzf.vim'
 endif
 let g:make = 'gmake'
 if exists('make')
-    let g:make = 'make'
+	let g:make = 'make'
 endif
 
 "" Vim-Session
@@ -97,7 +97,7 @@ Plug 'mattn/emmet-vim'
 
 "" Include user's extra bundle
 if filereadable(expand("~/.config/nvim/bundle/DoxygenToolkit.vim"))
-    source ~/.config/nvim/bundle/DoxygenToolkit.vim
+	source ~/.config/nvim/bundle/DoxygenToolkit.vim
 endif
 
 call plug#end()
@@ -133,15 +133,15 @@ set hidden
 "" Searching
 set hlsearch
 set incsearch
-" set ignorecase
+set ignorecase
 set smartcase
 
 set fileformats=unix,dos,mac
 
 if exists('$SHELL')
-    set shell=$SHELL
+	set shell=$SHELL
 else
-    set shell=/bin/sh
+	set shell=/bin/sh
 endif
 
 " session management
@@ -179,13 +179,13 @@ set gfn=Monospace\ 10
 "         set transparency=7
 "     endif
 " else
-    " let g:CSApprox_loaded = 1
+" let g:CSApprox_loaded = 1
 
-    " IndentLine
-    " let g:indentLine_enabled = 1
-    " let g:indentLine_concealcursor = 0
-    " let g:indentLine_char = '┆'
-    " let g:indentLine_faster = 1
+" IndentLine
+" let g:indentLine_enabled = 1
+" let g:indentLine_concealcursor = 0
+" let g:indentLine_char = '┆'
+" let g:indentLine_faster = 1
 " endif
 
 
@@ -259,11 +259,11 @@ command! FixWhitespace :%s/\s\+$//e
 "" Functions
 "*****************************************************************************
 if !exists('*s:setupWrapping')
-    function s:setupWrapping()
-        set wrap
-        set wm=2
-        set textwidth=79
-    endfunction
+	function s:setupWrapping()
+		set wrap
+		set wm=2
+		set textwidth=79
+	endfunction
 endif
 
 "*****************************************************************************
@@ -271,29 +271,29 @@ endif
 "*****************************************************************************
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
-    autocmd!
-    " autocmd BufEnter,InsertLeave * :syntax sync maxlines=50
-    autocmd BufEnter,InsertLeave * :syntax sync fromstart
-    " autocmd BufEnter * :syntax sync fromstart
+	autocmd!
+	" autocmd BufEnter,InsertLeave * :syntax sync maxlines=50
+	autocmd BufEnter,InsertLeave * :syntax sync fromstart
+	" autocmd BufEnter * :syntax sync fromstart
 augroup END
 
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
-    autocmd!
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+	autocmd!
+	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
 "" txt
 augroup vimrc-wrapping
-    autocmd!
-    autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+	autocmd!
+	autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 augroup END
 
 "" make/cmake
 augroup vimrc-make-cmake
-    autocmd!
-    autocmd FileType make setlocal noexpandtab
-    autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+	autocmd!
+	autocmd FileType make setlocal noexpandtab
+	autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
 augroup END
 
 set autoread
@@ -335,32 +335,47 @@ let g:tagbar_autofocus = 1
 " endif
 
 "" Copy/Paste/Cut
-if has('unnamedplus')
-    set clipboard=unnamed,unnamedplus
-endif
+" if has('unnamedplus')
+"     set clipboard=unnamed,unnamedplus
+" endif
 
-
-noremap YY "+y<CR>
-noremap <leader>p "+gP<CR>
-noremap XX "+x<CR>
+" noremap YY "+y<CR>
+" noremap <leader>p "+gP<CR>
+" noremap XX "+x<CR>
 
 if has('macunix')
-    " pbcopy for OSX copy/paste
-    vnoremap <C-x> :!pbcopy<CR>
-    vnoremap <C-c> :w !pbcopy<CR><CR>
+	" pbcopy for OSX copy/paste
+	vnoremap <C-x> :!pbcopy<CR>
+	vnoremap <C-c> :w !pbcopy<CR><CR>
 else
-    let s:clip = '/mnt/c/Windows/System32/clip.exe'
-    if executable(s:clip)
-        augroup WSLYank
-            autocmd!
-            autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
-        augroup END
-    end
+	" let s:clip = '/mnt/c/Windows/System32/clip.exe'
+	" if executable(s:clip)
+	"     augroup WSLYank
+	"         autocmd!
+	"         autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
+	"     augroup END
+	" end
+  set clipboard=unnamedplus
+	autocmd TextYankPost * call YankDebounced()
+
+	function! Yank(timer)
+		call system('win32yank.exe -i --crlf', @")
+		redraw!
+	endfunction
+
+	let g:yank_debounce_time_ms = 500
+	let g:yank_debounce_timer_id = -1
+
+	function! YankDebounced()
+		let l:now = localtime()
+		call timer_stop(g:yank_debounce_timer_id)
+		let g:yank_debounce_timer_id = timer_start(g:yank_debounce_time_ms, 'Yank')
+	endfunction
 endif
 
 "" Buffer nav
-nnoremap <Tab> :bp<CR>
-nnoremap <S-Tab> :bn<CR>
+nnoremap <S-Tab> :bp<CR>
+nnoremap <Tab> :bn<CR>
 
 "" Close buffer
 noremap <leader>z :bd<CR>
@@ -388,10 +403,10 @@ vnoremap K :m '<-2<CR>gv=gv
 " python
 " vim-python
 augroup vimrc-python
-    autocmd!
-    autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=8 colorcolumn=79
-                \ formatoptions+=croq softtabstop=4
-                \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+	autocmd!
+	autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=8 colorcolumn=79
+				\ formatoptions+=croq softtabstop=4
+				\ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 augroup END
 
 " vim-airline
@@ -414,7 +429,7 @@ autocmd Filetype html setlocal ts=2 sw=2 expandtab
 
 "" Include user's local vim config
 if filereadable(expand("~/.config/nvim/local_init.vim"))
-    source ~/.config/nvim/local_init.vim
+	source ~/.config/nvim/local_init.vim
 endif
 
 "*****************************************************************************
@@ -423,37 +438,37 @@ endif
 
 " vim-airline
 if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
+	let g:airline_symbols = {}
 endif
 
 if !exists('g:airline_powerline_fonts')
-    let g:airline#extensions#tabline#left_sep = ' '
-    let g:airline#extensions#tabline#left_alt_sep = '|'
-    let g:airline_left_sep          = '▶'
-    let g:airline_left_alt_sep      = '»'
-    let g:airline_right_sep         = '◀'
-    let g:airline_right_alt_sep     = '«'
-    let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-    let g:airline#extensions#readonly#symbol   = '⊘'
-    let g:airline#extensions#linecolumn#prefix = '¶'
-    let g:airline#extensions#paste#symbol      = 'ρ'
-    let g:airline_symbols.linenr    = '␊'
-    let g:airline_symbols.branch    = '⎇'
-    let g:airline_symbols.paste     = 'ρ'
-    let g:airline_symbols.paste     = 'Þ'
-    let g:airline_symbols.paste     = '∥'
-    let g:airline_symbols.whitespace = 'Ξ'
+	let g:airline#extensions#tabline#left_sep = ' '
+	let g:airline#extensions#tabline#left_alt_sep = '|'
+	let g:airline_left_sep          = '▶'
+	let g:airline_left_alt_sep      = '»'
+	let g:airline_right_sep         = '◀'
+	let g:airline_right_alt_sep     = '«'
+	let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
+	let g:airline#extensions#readonly#symbol   = '⊘'
+	let g:airline#extensions#linecolumn#prefix = '¶'
+	let g:airline#extensions#paste#symbol      = 'ρ'
+	let g:airline_symbols.linenr    = '␊'
+	let g:airline_symbols.branch    = '⎇'
+	let g:airline_symbols.paste     = 'ρ'
+	let g:airline_symbols.paste     = 'Þ'
+	let g:airline_symbols.paste     = '∥'
+	let g:airline_symbols.whitespace = 'Ξ'
 else
-    let g:airline#extensions#tabline#left_sep = ''
-    let g:airline#extensions#tabline#left_alt_sep = ''
+	let g:airline#extensions#tabline#left_sep = ''
+	let g:airline#extensions#tabline#left_alt_sep = ''
 
-    " powerline symbols
-    let g:airline_left_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly = ''
-    let g:airline_symbols.linenr = ''
+	" powerline symbols
+	let g:airline_left_sep = ''
+	let g:airline_right_sep = ''
+	let g:airline_right_alt_sep = ''
+	let g:airline_symbols.branch = ''
+	let g:airline_symbols.readonly = ''
+	let g:airline_symbols.linenr = ''
 endif
 
 " vim-smooth-scroll
@@ -487,7 +502,9 @@ nnoremap <leader>ev         :edit $MYVIMRC<cr>
 nnoremap <leader>sv         :source $MYVIMRC<cr>
 
 " Paste toggle
-nnoremap <F2> :set paste!<cr>:set paste?<cr>
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
 
 " Exit Insert Mode
 inoremap jk <esc>
@@ -517,17 +534,17 @@ inoreabbrev ymd <C-R>=strftime("%Y-%m-%d")<CR>
 "*****************************************************************************
 " augroup bradkim06group ---------------------- {{{
 augroup bradkim06group
-    autocmd!
-    " autocmd BufWritePre * :normal gg=G''
-    autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab | :RainbowToggleOn
-    autocmd InsertEnter * set cul
-    autocmd InsertLeave * set nocul
-    " Automatically source vimrc on save.
-    " autocmd! bufwritepost $MYVIMRC source $MYVIMRC
-    " let terminal resize scale the internal windows
-    autocmd VimResized * :wincmd =
-    " Enable Folding vim
-    autocmd FileType vim setlocal foldmethod=marker
+	autocmd!
+	" autocmd BufWritePre * :normal gg=G''
+	autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab | :RainbowToggleOn
+	autocmd InsertEnter * set cul
+	autocmd InsertLeave * set nocul
+	" Automatically source vimrc on save.
+	" autocmd! bufwritepost $MYVIMRC source $MYVIMRC
+	" let terminal resize scale the internal windows
+	autocmd VimResized * :wincmd =
+	" Enable Folding vim
+	autocmd FileType vim setlocal foldmethod=marker
 augroup END
 "}}}
 "*****************************************************************************
@@ -587,15 +604,15 @@ let $FZF_DEFAULT_COMMAND =  "find * -path '*/\.*' -prune -o -path 'node_modules/
 
 " The Silver Searcher
 if executable('ag')
-    let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-    set grepprg=ag\ --nogroup\ --nocolor
+	let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+	set grepprg=ag\ --nogroup\ --nocolor
 endif
 
 " ripgrep
 if executable('rg')
-    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
-    set grepprg=rg\ --vimgrep
-    command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+	let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+	set grepprg=rg\ --vimgrep
+	command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
 endif
 
 cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
@@ -626,10 +643,10 @@ set shortmess+=c
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 if has("patch-8.1.1564")
-    " Recently vim can merge signcolumn and number column into one
-    set signcolumn=number
+	" Recently vim can merge signcolumn and number column into one
+	set signcolumn=number
 else
-    set signcolumn=yes
+	set signcolumn=yes
 endif
 
 
@@ -648,11 +665,11 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+	autocmd!
+	" Setup formatexpr specified filetype(s).
+	autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+	" Update signature help on jump placeholder.
+	autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
