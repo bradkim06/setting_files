@@ -21,9 +21,8 @@
 "     autocmd! bufwritepost .vimrc source %
 "     autocmd VimEnter * PlugInstall
 " endif
+let g:polyglot_disabled = ['python', 'markdown', 'autoindent']
 
-syntax enable
-syntax on
 
 " Required:
 call plug#begin(expand('~/.config/nvim/plugged'))
@@ -31,7 +30,9 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 "*****************************************************************************
 "" Plug install packages
 "*****************************************************************************
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree' |
+            \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+            \ Plug 'ryanoasis/vim-devicons'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
@@ -39,6 +40,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
 Plug 'sheerun/vim-polyglot'
+Plug 'octol/vim-cpp-enhanced-highlight'
 
 if isdirectory('/usr/local/opt/fzf')
   Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -63,7 +65,11 @@ Plug 'xolox/vim-session'
 Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim'
-
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'dikiaap/minimalist'
+Plug 'junegunn/seoul256.vim'
+Plug 'tomasiser/vim-code-dark'
 " smooth scroll
 Plug 'terryma/vim-smooth-scroll'
 
@@ -80,7 +86,8 @@ Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 Plug 'preservim/nerdcommenter'
 
 " MarkDown Preview
-Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+" Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'   }
 
 " Auto pair
 Plug 'jiangmiao/auto-pairs'
@@ -88,8 +95,8 @@ Plug 'jiangmiao/auto-pairs'
 " Vim-Prettier
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', {
-      \ 'do': 'yarn install',
-      \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+      \ 'do': 'yarn install', 'branch': 'release/1.x',
+      \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'mdx', 'jsx', 'tsx'] }
 
 " formatter
 Plug 'Chiel92/vim-autoformat'
@@ -102,9 +109,21 @@ Plug 'junegunn/vim-emoji'
 
 " html
 "" HTML Bundle
-Plug 'gko/vim-coloresque'
 Plug 'tpope/vim-haml'
 Plug 'mattn/emmet-vim'
+
+"css
+Plug 'ap/vim-css-color'
+" Plug 'norcalli/nvim-colorizer.lua'
+
+"------------------------ VIM TSX ------------------------
+" by default, if you open tsx file, neovim does not show syntax colors
+" vim-tsx will do all the coloring for jsx in the .tsx file
+Plug 'ianks/vim-tsx'
+"------------------------ VIM TSX ------------------------
+" by default, if you open tsx file, neovim does not show syntax colors
+" typescript-vim will do all the coloring for typescript keywords
+Plug 'leafgarland/typescript-vim'
 
 "*****************************************************************************
 "*****************************************************************************
@@ -123,7 +142,7 @@ filetype plugin indent on
 "" [Basic Settings]
 "*****************************************************************************
 "" Encoding
-set encoding=utf-8
+set encoding=UTF-8
 set fileencoding=utf-8
 set fileencodings=utf-8
 
@@ -167,16 +186,38 @@ let g:session_command_aliases = 1
 "*****************************************************************************
 "" Visual Settings
 "*****************************************************************************
+syntax enable
+syntax on
 " set ruler
 set number
 
 let no_buffers_menu=1
 
+" let g:PaperColor_Theme_Options = {
+"   \   'theme': {
+"   \     'default.dark': {
+"   \       'override' : {
+"   \         'color00' : ['#080808', '232'],
+"   \         'linenumber_bg' : ['#080808', '232']
+"   \       }
+"   \     }
+"   \   }
+"   \ }
+" colorscheme PaperColor
+"
+" colorscheme codedark
+
+let g:seoul256_background = 233
+colo seoul256
+
 " let g:rehash256 = 1
 " silent! colorscheme molokai
 
-let g:gruvbox_contrast_dark='hard'
-silent! colorscheme gruvbox
+" let g:gruvbox_contrast_dark='hard'
+" silent! colorscheme gruvbox
+"
+" set t_Co=256
+" silent! colorscheme minimalist
 
 " let g:onedark_hide_endofbuffer=1
 " let g:onedark_termcolors=256
@@ -230,6 +271,8 @@ nnoremap N Nzzzv
 
 " vim-airline
 let g:airline_theme = 'luna'
+
+" let g:airline_theme = 'seoul256'
 " let g:airline#extensions#branch#enabled = 1
 " let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -284,12 +327,12 @@ endif
 "" Autocmd Rules
 "*****************************************************************************
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-" augroup vimrc-sync-fromstart
-"   autocmd!
-" autocmd BufEnter,InsertLeave * :syntax sync maxlines=100
+augroup vimrc-sync-fromstart
+  autocmd!
+autocmd BufEnter,InsertLeave * :syntax sync maxlines=100
 " autocmd BufEnter,InsertLeave * :syntax sync fromstart
 " autocmd BufEnter * :syntax sync fromstart
-" augroup END
+augroup END
 
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
@@ -352,10 +395,6 @@ let g:tagbar_autofocus = 1
 " if has('unnamedplus')
 "     set clipboard=unnamed,unnamedplus
 " endif
-
-" noremap YY "+y<CR>
-" noremap <leader>p "+gP<CR>
-" noremap XX "+x<CR>
 
 if has('macunix')
   " pbcopy for OSX copy/paste
@@ -428,8 +467,7 @@ let g:airline#extensions#virtualenv#enabled = 1
 
 " Syntax highlight
 " Default highlight is better than polyglot
-let g:polyglot_disabled = ['python', 'markdown']
-let python_highlight_all = 1
+" let python_highlight_all = 1
 
 " markdown
 " let g:vim_markdown_folding_disabled = 1
@@ -545,6 +583,8 @@ nnoremap <C-a> gg<S-v>G
 " add easy date insertion
 inoreabbrev ymdt <C-R>=strftime("%Y-%m-%d %a %I:%M")<CR>
 inoreabbrev ymd <C-R>=strftime("%Y-%m-%d")<CR>
+inoreabbrev mytheme ${props => props.theme.};
+
 " }}}
 "*****************************************************************************
 " augroup bradkim06group
@@ -553,7 +593,7 @@ inoreabbrev ymd <C-R>=strftime("%Y-%m-%d")<CR>
 augroup bradkim06group
   autocmd!
   " autocmd BufWritePre * :normal gg=G''
-  autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab | :RainbowToggleOn
+  autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab
   autocmd InsertEnter * set cul
   autocmd InsertLeave * set nocul
   " Automatically source vimrc on save.
@@ -601,14 +641,15 @@ let g:NERDToggleCheckAllLines = 1
 " My FZF Settings
 "*****************************************************************************
 " FZF Rg
-noremap <C-s> :Ag! <C-R><C-W>
+noremap <C-s> :Ag!<cr>
+noremap <leader>s :Ag! <C-R><C-W><cr>
 " noremap <C-s> :Ag! <cWORD> .<cr>
 " FZF File
 nnoremap <C-p> :Files!<Cr>
 " Empty value to disable preview window altogether
 let g:fzf_preview_window = ''
 " Always enable preview window on the right with 50% width
-let g:fzf_preview_window = 'right:50%'
+let g:fzf_preview_window = 'up:40%'
 " Example echo word on under the cursor
 " nnoremap <C-s> :echo printf('word under cursor: %s',expand('<cword>'))
 "
@@ -778,7 +819,7 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics.
@@ -816,8 +857,8 @@ let g:DoxygenToolkit_authorName="Kim Junsu"
 "" instant-markdown
 "*****************************************************************************
 " instant-markdown--------------------- {{{
-let g:instant_markdown_slow = 1
-let g:instant_markdown_autostart = 0
+" let g:instant_markdown_slow = 1
+" let g:instant_markdown_autostart = 0
 " let g:instant_markdown_open_to_the_world = 1
 " let g:instant_markdown_allow_unsafe_content = 1
 " let g:instant_markdown_allow_external_content = 0
@@ -825,7 +866,7 @@ let g:instant_markdown_autostart = 0
 " let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
 " let g:instant_markdown_autoscroll = 0
 " let g:instant_markdown_port = 8888
-let g:instant_markdown_python = 1
+" let g:instant_markdown_python = 1
 "}}}
 "
 " Formatter ---------------------- {{{
@@ -836,9 +877,50 @@ let g:clang_format#style_options = {
       \ "AlwaysBreakTemplateDeclarations" : "true",
       \ "Standard" : "C++11"}
 " VIm-Prettier
+nmap <Leader>p <Plug>(Prettier)
 let g:prettier#autoformat = 1
 let g:prettier#autoformat_require_pragma = 0
 let g:prettier#quickfix_enabled = 0
+let g:prettier#config#config_precedence = 'file-override'
+" Max line length that prettier will wrap on: a number or 'auto' (use
+" textwidth).
+" default: 'auto'
+let g:prettier#config#print_width = 80
+
+" number of spaces per indentation level: a number or 'auto' (use
+" softtabstop)
+" default: 'auto'
+let g:prettier#config#tab_width = 2
+
+" use tabs instead of spaces: true, false, or auto (use the expandtab setting).
+" default: 'auto'
+let g:prettier#config#use_tabs = "false"
+
+" flow|babylon|typescript|css|less|scss|json|graphql|markdown or empty string
+" (let prettier choose).
+" default: ''
+let g:prettier#config#parser = ''
+
+" cli-override|file-override|prefer-file
+" default: 'file-override'
+let g:prettier#config#config_precedence = 'file-override'
+
+" always|never|preserve
+" default: 'preserve'
+let g:prettier#config#prose_wrap = 'preserve'
+
+" css|strict|ignore
+" default: 'css'
+let g:prettier#config#html_whitespace_sensitivity = 'css'
+
+" false|true
+" default: 'false'
+let g:prettier#config#require_pragma = 'false'
+
+" Define the flavor of line endings
+" lf|crlf|cr|all
+" defaut: 'lf'
+let g:prettier#config#end_of_line = get(g:, 'prettier#config#end_of_line', 'crlf')
 " when running at every change you may want to disable quickfix
 " let g:prettier#quickfix_enabled = 0
 augroup formatter
@@ -848,7 +930,7 @@ augroup formatter
   autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
   " autocmd TextChanged,InsertLeave *.c,*.h :ClangFormat
   autocmd BufWritePre *.c,*.h :ClangFormat
-  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.mdx,*.vue,*.yaml,*.html PrettierAsync
 augroup END
 "}}}
 "
@@ -859,3 +941,120 @@ augroup emoji_complete
 augroup END
 
 nnoremap <leader>e :%s/:\([^:]\+\):/\=emoji#for(submatch(1), submatch(0))/g<cr>
+
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
+
+" " Can be enabled or disabled
+" let g:webdevicons_enable_nerdtree = 1
+" whether or not to show the nerdtree brackets around flags
+" let g:webdevicons_conceal_nerdtree_brackets = 1
+function! s:fzf_statusline()
+  " Override statusline as you like
+  highlight fzf1 ctermfg=161 ctermbg=251
+  highlight fzf2 ctermfg=23 ctermbg=251
+  highlight fzf3 ctermfg=237 ctermbg=251
+  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
+endfunction
+
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
+" set to 1, nvim will open the preview window after entering the markdown buffer
+" default: 0
+let g:mkdp_auto_start = 0
+
+" set to 1, the nvim will auto close current preview window when change
+" from markdown buffer to another buffer
+" default: 1
+let g:mkdp_auto_close = 0
+
+" set to 1, the vim will refresh markdown when save the buffer or
+" leave from insert mode, default 0 is auto refresh markdown as you edit or
+" move the cursor
+" default: 0
+let g:mkdp_refresh_slow = 0
+
+" set to 1, the MarkdownPreview command can be use for all files,
+" by default it can be use in markdown file
+" default: 0
+let g:mkdp_command_for_global = 0
+
+" set to 1, preview server available to others in your network
+" by default, the server listens on localhost (127.0.0.1)
+" default: 0
+let g:mkdp_open_to_the_world = 0
+
+" use custom IP to open preview page
+" useful when you work in remote vim and preview on local browser
+" more detail see: https://github.com/iamcco/markdown-preview.nvim/pull/9
+" default empty
+let g:mkdp_open_ip = ''
+
+" specify browser to open preview page
+" default: ''
+let g:mkdp_browser = ''
+
+" set to 1, echo preview page url in command line when open preview page
+" default is 0
+let g:mkdp_echo_preview_url = 0
+
+" a custom vim function name to open preview page
+" this function will receive url as param
+" default is empty
+let g:mkdp_browserfunc = ''
+
+" options for markdown render
+" mkit: markdown-it options for render
+" katex: katex options for math
+" uml: markdown-it-plantuml options
+" maid: mermaid options
+" disable_sync_scroll: if disable sync scroll, default 0
+" sync_scroll_type: 'middle', 'top' or 'relative', default value is 'middle'
+"   middle: mean the cursor position alway show at the middle of the preview page
+"   top: mean the vim top viewport alway show at the top of the preview page
+"   relative: mean the cursor position alway show at the relative positon of the preview page
+" hide_yaml_meta: if hide yaml metadata, default is 1
+" sequence_diagrams: js-sequence-diagrams options
+" content_editable: if enable content editable for preview page, default: v:false
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false
+    \ }
+
+" use a custom markdown style must be absolute path
+" like '/Users/username/markdown.css' or expand('~/markdown.css')
+let g:mkdp_markdown_css = ''
+
+" use a custom highlight style must absolute path
+" like '/Users/username/highlight.css' or expand('~/highlight.css')
+let g:mkdp_highlight_css = ''
+
+" use a custom port to start server or random for empty
+let g:mkdp_port = ''
+
+" preview page title
+" ${name} will be replace with the file name
+let g:mkdp_page_title = '「${name}」'
+
+" example
+nmap <C-m> <Plug>MarkdownPreview
+nmap <A-t> <Plug>MarkdownPreviewStop
+nmap <C-t> <Plug>MarkdownPreviewToggle

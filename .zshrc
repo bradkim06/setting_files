@@ -10,6 +10,7 @@ ZSH_THEME="agnoster"
 # ZSH_THEME="robbyrussell"
 # ZSH_THEME="random"
 # ZSH_THEME="powerlevel10k/powerlevel10k"
+export PATH="$PATH:`yarn global bin`"
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin$PATH
 export EDITOR=/usr/local/bin/nvim
 export ZSH="/home/bradkim06/.oh-my-zsh"
@@ -176,3 +177,5 @@ prompt_context() {
     prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
   fi
 }
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
