@@ -65,7 +65,7 @@ Plug 'xolox/vim-session'
 Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim'
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'dikiaap/minimalist'
 Plug 'junegunn/seoul256.vim'
@@ -142,10 +142,10 @@ filetype plugin indent on
 "" [Basic Settings]
 "*****************************************************************************
 "" Encoding
-set encoding=UTF-8
-set fileencoding=utf-8
-set fileencodings=utf-8
-
+" set encoding=UTF-8
+" set fileencoding=utf-8
+" set fileencodings=utf-8
+set fileencodings=euc-kr,utf8
 
 "" Fix backspace indent
 set backspace=indent,eol,start
@@ -316,11 +316,11 @@ command! FixWhitespace :%s/\s\+$//e
 "" Functions
 "*****************************************************************************
 if !exists('*s:setupWrapping')
-  function s:setupWrapping()
-    set wrap
-    set wm=2
-    set textwidth=79
-  endfunction
+function s:setupWrapping()
+  set wrap
+  set wm=2
+  set textwidth=79
+endfunction
 endif
 
 "*****************************************************************************
@@ -328,29 +328,29 @@ endif
 "*****************************************************************************
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
-  autocmd!
-autocmd BufEnter,InsertLeave * :syntax sync maxlines=100
+autocmd!
+autocmd BufEnter,InsertLeave * :syntax sync maxlines=200
 " autocmd BufEnter,InsertLeave * :syntax sync fromstart
 " autocmd BufEnter * :syntax sync fromstart
 augroup END
 
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+autocmd!
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
 "" txt
 augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+autocmd!
+autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 augroup END
 
 "" make/cmake
 augroup vimrc-make-cmake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+autocmd!
+autocmd FileType make setlocal noexpandtab
+autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
 augroup END
 
 set autoread
@@ -457,7 +457,7 @@ vnoremap K :m '<-2<CR>gv=gv
 " vim-python
 augroup vimrc-python
   autocmd!
-  autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=8 colorcolumn=79
+  autocmd FileType python setlocal expandtab colorcolumn=79
         \ formatoptions+=croq softtabstop=4
         \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 augroup END
@@ -582,8 +582,9 @@ nnoremap <C-a> gg<S-v>G
 " Custom Abbreviations ---------------------- {{{
 " add easy date insertion
 inoreabbrev ymdt <C-R>=strftime("%Y-%m-%d %a %I:%M")<CR>
-inoreabbrev ymd <C-R>=strftime("%Y-%m-%d")<CR>
-inoreabbrev mytheme ${props => props.theme.};
+
+inoreabbrev ymd <C-R>=strftime("%FT%T")<CR>
+inoreabbrev mytheme ${({ theme }) => theme.
 
 " }}}
 "*****************************************************************************
@@ -593,7 +594,7 @@ inoreabbrev mytheme ${props => props.theme.};
 augroup bradkim06group
   autocmd!
   " autocmd BufWritePre * :normal gg=G''
-  autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab
+  " autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 expandtab
   autocmd InsertEnter * set cul
   autocmd InsertLeave * set nocul
   " Automatically source vimrc on save.
@@ -622,7 +623,7 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_java = 1
 
 " Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+" let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
 
 " Allow commenting and inverting empty lines (useful when commenting a region)
 let g:NERDCommentEmptyLines = 1
@@ -843,32 +844,16 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 "" DoxygenToolkit Settings
 "*****************************************************************************
 " DoxygenToolkit--------------------- {{{
-" let g:DoxygenToolkit_briefTag_pre="@Synopsis  "
-" let g:DoxygenToolkit_paramTag_pre="@Param "
-" let g:DoxygenToolkit_returnTag="@Returns  "
-let g:DoxygenToolkit_blockHeader="----------------------------------------------------------------------------"
-let g:DoxygenToolkit_blockFooter="----------------------------------------------------------------------------"
-" let g:DoxygenToolkit_blockHeader="============================================================================"
-" let g:DoxygenToolkit_blockFooter="============================================================================"
+let g:DoxygenToolkit_briefTag_pre="@brief  "
+let g:DoxygenToolkit_paramTag_pre="@Param "
+let g:DoxygenToolkit_returnTag="@Returns   "
+let g:DoxygenToolkit_blockHeader="=========================================================================="
+let g:DoxygenToolkit_blockFooter="=========================================================================="
+let g:DoxygenToolkit_licenseTag="My own license"   
 let g:DoxygenToolkit_authorName="Kim Junsu"
-" let g:DoxygenToolkit_licenseTag="My own license"   <-- !!! Does not end with "\<enter>"
 "}}}
 "*****************************************************************************
-"" instant-markdown
-"*****************************************************************************
-" instant-markdown--------------------- {{{
-" let g:instant_markdown_slow = 1
-" let g:instant_markdown_autostart = 0
-" let g:instant_markdown_open_to_the_world = 1
-" let g:instant_markdown_allow_unsafe_content = 1
-" let g:instant_markdown_allow_external_content = 0
-" let g:instant_markdown_mathjax = 1
-" let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
-" let g:instant_markdown_autoscroll = 0
-" let g:instant_markdown_port = 8888
-" let g:instant_markdown_python = 1
-"}}}
-"
+
 " Formatter ---------------------- {{{
 " Clang Format
 let g:clang_format#style_options = {
@@ -882,40 +867,6 @@ let g:prettier#autoformat = 1
 let g:prettier#autoformat_require_pragma = 0
 let g:prettier#quickfix_enabled = 0
 let g:prettier#config#config_precedence = 'file-override'
-" Max line length that prettier will wrap on: a number or 'auto' (use
-" textwidth).
-" default: 'auto'
-let g:prettier#config#print_width = 80
-
-" number of spaces per indentation level: a number or 'auto' (use
-" softtabstop)
-" default: 'auto'
-let g:prettier#config#tab_width = 2
-
-" use tabs instead of spaces: true, false, or auto (use the expandtab setting).
-" default: 'auto'
-let g:prettier#config#use_tabs = "false"
-
-" flow|babylon|typescript|css|less|scss|json|graphql|markdown or empty string
-" (let prettier choose).
-" default: ''
-let g:prettier#config#parser = ''
-
-" cli-override|file-override|prefer-file
-" default: 'file-override'
-let g:prettier#config#config_precedence = 'file-override'
-
-" always|never|preserve
-" default: 'preserve'
-let g:prettier#config#prose_wrap = 'preserve'
-
-" css|strict|ignore
-" default: 'css'
-let g:prettier#config#html_whitespace_sensitivity = 'css'
-
-" false|true
-" default: 'false'
-let g:prettier#config#require_pragma = 'false'
 
 " Define the flavor of line endings
 " lf|crlf|cr|all
@@ -930,7 +881,7 @@ augroup formatter
   autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
   " autocmd TextChanged,InsertLeave *.c,*.h :ClangFormat
   autocmd BufWritePre *.c,*.h :ClangFormat
-  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.mdx,*.vue,*.yaml,*.html PrettierAsync
+  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.mdx,*.vue,*.yaml,*.html Prettier
 augroup END
 "}}}
 "
@@ -1058,3 +1009,6 @@ let g:mkdp_page_title = '「${name}」'
 nmap <C-m> <Plug>MarkdownPreview
 nmap <A-t> <Plug>MarkdownPreviewStop
 nmap <C-t> <Plug>MarkdownPreviewToggle
+
+" swap header
+nnoremap <F5> :e %:p:s,.h$,.X123X,:s,.c$,.h,:s,.X123X$,.c,<CR>
