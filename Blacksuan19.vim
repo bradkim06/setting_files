@@ -17,6 +17,8 @@ Plug 'vim-airline/vim-airline'                          " airline status bar
 Plug 'ryanoasis/vim-devicons'                           " pretty icons everywhere
 Plug 'luochen1990/rainbow'                              " rainbow parenthesis
 Plug 'hzchirs/vim-material'                             " material color themes
+Plug 'junegunn/seoul256.vim'
+Plug 'sheerun/vim-polyglot'
 Plug 'gregsexton/MatchTag'                              " highlight matching html tags
 Plug 'Jorengarenar/vim-MvVis'                           " move visual selection
 "}}}
@@ -42,6 +44,7 @@ Plug 'machakann/vim-sandwich'                           " make sandwiches
 Plug 'christoomey/vim-tmux-navigator'                   " seamless vim and tmux navigation
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'TovarishFin/vim-solidity'
+Plug 'rhysd/vim-clang-format'
 call plug#end()
 
 "}}}
@@ -58,8 +61,9 @@ set list listchars=trail:»,tab:»-                       " use tab to navigate 
 set fillchars+=vert:\▏                                  " requires a patched nerd font (try FiraCode)
 set wrap breakindent                                    " wrap long lines to the width set by tw
 set encoding=utf-8                                      " text encoding
+set nornu                                               " no Relative number
+" set relativenumber                                      " current line is 0
 set number                                              " enable numbers on the left
-set relativenumber                                      " current line is 0
 set title                                               " tab title as file name
 set noshowmode                                          " dont show current mode below statusline
 set noshowcmd                                           " to get rid of display of last command
@@ -96,6 +100,9 @@ set shortmess+=c
 set signcolumn=yes
 
 " Themeing
+" let g:seoul256_background = 233
+" colo seoul256
+
 let g:material_style = 'oceanic'
 colorscheme vim-material
 hi Pmenu guibg='#00010a' guifg=white                    " popup menu colors
@@ -164,7 +171,6 @@ let g:coc_global_extensions = [
             \'coc-lists',
             \'coc-snippets',
             \'coc-python',
-            \'coc-clangd',
             \'coc-prettier',
             \'coc-xml',
             \'coc-syntax',
@@ -208,19 +214,19 @@ let g:startify_commands = [
     \ ]
 
 " custom banner
-let g:startify_custom_header = [
- \ '',
- \ '                                                    ▟▙            ',
- \ '                                                    ▝▘            ',
- \ '            ██▃▅▇█▆▖  ▗▟████▙▖   ▄████▄   ██▄  ▄██  ██  ▗▟█▆▄▄▆█▙▖',
- \ '            ██▛▔ ▝██  ██▄▄▄▄██  ██▛▔▔▜██  ▝██  ██▘  ██  ██▛▜██▛▜██',
- \ '            ██    ██  ██▀▀▀▀▀▘  ██▖  ▗██   ▜█▙▟█▛   ██  ██  ██  ██',
- \ '            ██    ██  ▜█▙▄▄▄▟▊  ▀██▙▟██▀   ▝████▘   ██  ██  ██  ██',
- \ '            ▀▀    ▀▀   ▝▀▀▀▀▀     ▀▀▀▀       ▀▀     ▀▀  ▀▀  ▀▀  ▀▀',
- \ '',
- \ '',
- \ '',
- \]
+" let g:startify_custom_header = [
+"  \ '',
+"  \ '                                                    ▟▙            ',
+"  \ '                                                    ▝▘            ',
+"  \ '            ██▃▅▇█▆▖  ▗▟████▙▖   ▄████▄   ██▄  ▄██  ██  ▗▟█▆▄▄▆█▙▖',
+"  \ '            ██▛▔ ▝██  ██▄▄▄▄██  ██▛▔▔▜██  ▝██  ██▘  ██  ██▛▜██▛▜██',
+"  \ '            ██    ██  ██▀▀▀▀▀▘  ██▖  ▗██   ▜█▙▟█▛   ██  ██  ██  ██',
+"  \ '            ██    ██  ▜█▙▄▄▄▟▊  ▀██▙▟██▀   ▝████▘   ██  ██  ██  ██',
+"  \ '            ▀▀    ▀▀   ▝▀▀▀▀▀     ▀▀▀▀       ▀▀     ▀▀  ▀▀  ▀▀  ▀▀',
+"  \ '',
+"  \ '',
+"  \ '',
+"  \]
 
 " rainbow brackets
 let g:rainbow_active = 1
@@ -237,12 +243,17 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
-let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'border': 'sharp' } }
+let g:fzf_layout = {'up':'~95%', 'window': { 'width': 0.95, 'height': 0.95,'yoffset':0.5,'xoffset': 0.5, 'border': 'sharp' } }
 let g:fzf_tags_command = 'ctags -R'
 
 let $FZF_DEFAULT_OPTS = '--layout=reverse --inline-info'
 let $FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git/**' --glob '!build/**' --glob '!.dart_tool/**' --glob '!.idea'"
 
+let g:clang_format#style_options = {
+            \ "AccessModifierOffset" : -4,
+            \ "AllowShortIfStatementsOnASingleLine" : "true",
+            \ "AlwaysBreakTemplateDeclarations" : "true",
+            \ "Standard" : "C++11"}
 "}}}
 
 " ======================== Commands ============================= "{{{
@@ -351,7 +362,7 @@ nmap <leader>w :w<CR>
 map <leader>s :Format<CR>
 nmap <Tab> :bnext<CR>
 nmap <S-Tab> :bprevious<CR>
-noremap <leader>e :PlugInstall<CR>
+" noremap <leader>e :PlugInstall<CR>
 noremap <C-q> :q<CR>
 
 " new line in normal mode and back
@@ -393,7 +404,7 @@ nnoremap <silent> <leader>f :Files<CR>
 nmap <leader>b :Buffers<CR>
 nmap <leader>c :Commands<CR>
 nmap <leader>t :BTags<CR>
-nmap <leader>/ :Rg<CR>
+nmap <leader>/ :Ag<CR>
 nmap <leader>gc :Commits<CR>
 nmap <leader>gs :GFiles?<CR>
 nmap <leader>sh :History/<CR>
@@ -428,10 +439,10 @@ nmap <leader>rn <Plug>(coc-rename)
 nmap <leader>o :OR <CR>
 
 " jump stuff
-nmap <leader>jd <Plug>(coc-definition)
-nmap <leader>jy <Plug>(coc-type-definition)
-nmap <leader>ji <Plug>(coc-implementation)
-nmap <leader>jr <Plug>(coc-references)
+nmap gd <Plug>(coc-definition)
+nmap gy <Plug>(coc-type-definition)
+nmap gi <Plug>(coc-implementation)
+nmap gr <Plug>(coc-references)
 
 " other coc actions
 xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
@@ -459,4 +470,15 @@ nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 nnoremap <leader>ev         :edit $MYVIMRC<cr>
 " Source init.vim
 nnoremap <leader>sv         :source $MYVIMRC<cr>
+"select all
+nnoremap <C-a> gg<S-v>G
+
+augroup formatter
+  autocmd!
+  " map to <Leader>cf in C++ code
+  " autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :ClangFormat<CR>
+  " autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
+  " autocmd TextChanged,InsertLeave *.c,*.h :ClangFormat
+  autocmd BufWritePre *.c,*.h :ClangFormat
+augroup END
 "}}}
