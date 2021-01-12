@@ -10,7 +10,8 @@
     "markdown",
     "typescript",
     "python",
-    "dart"
+    "dart",
+    "c"
   ],
 
   // suggest settings
@@ -76,5 +77,24 @@
   // other stuff (language specific)
   "python.autoComplete.addBrackets": true,
   "python.jediEnabled": false,
-  "html.autoClosingTags": true
+  "html.autoClosingTags": true,
+
+  "languageserver": {
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cpp", "objc", "objcpp"],
+      "rootPatterns": [
+        ".ccls",
+        "compile_commands.json",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ],
+      "initializationOptions": {
+        "cache": {
+          "directory": "/tmp/ccls"
+        }
+      }
+    }
+  }
 }
