@@ -45,6 +45,10 @@ Plug 'christoomey/vim-tmux-navigator'                   " seamless vim and tmux 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'TovarishFin/vim-solidity'
 Plug 'rhysd/vim-clang-format'
+
+" test plugin
+Plug 'voldikss/vim-floaterm'
+
 call plug#end()
 
 "}}}
@@ -60,7 +64,7 @@ set incsearch ignorecase smartcase hlsearch             " highlight text while s
 set list listchars=trail:»,tab:»-                       " use tab to navigate in list mode
 set fillchars+=vert:\▏                                  " requires a patched nerd font (try FiraCode)
 set wrap breakindent                                    " wrap long lines to the width set by tw
-set encoding=utf-8                                      " text encoding
+set fileencodings=euc-kr,utf8
 set nornu                                               " no Relative number
 " set relativenumber                                      " current line is 0
 set number                                              " enable numbers on the left
@@ -254,6 +258,7 @@ let g:clang_format#style_options = {
             \ "AllowShortIfStatementsOnASingleLine" : "true",
             \ "AlwaysBreakTemplateDeclarations" : "true",
             \ "Standard" : "C++11"}
+
 "}}}
 
 " ======================== Commands ============================= "{{{
@@ -356,14 +361,14 @@ let mapleader=","
 nnoremap ; :
 nmap \ <leader>q
 map <F6> :Startify <CR>
-nmap <leader>r :so ~/.config/nvim/init.vim<CR>
+" nmap <leader>r :so ~/.config/nvim/init.vim<CR>
 nmap <leader>q :bd<CR>
 nmap <leader>w :w<CR>
 map <leader>s :Format<CR>
 nmap <Tab> :bnext<CR>
 nmap <S-Tab> :bprevious<CR>
 " noremap <leader>e :PlugInstall<CR>
-noremap <C-q> :q<CR>
+noremap <space>q :q<CR>
 
 " new line in normal mode and back
 map <Enter> o<ESC>
@@ -427,8 +432,8 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 
 " multi cursor shortcuts
-nmap <silent> <C-a> <Plug>(coc-cursors-word)
-xmap <silent> <C-a> <Plug>(coc-cursors-range)
+nmap <silent> <space>a <Plug>(coc-cursors-word)
+xmap <silent> <space>a <Plug>(coc-cursors-range)
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -459,9 +464,9 @@ nmap <leader>gd :Gdiffsplit<CR>
 nmap <leader>gb :Gblame<CR>
 
 " tmux navigator
-nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <space>h :TmuxNavigateLeft<cr>
+nnoremap <silent> <space>j :TmuxNavigateDown<cr>
+nnoremap <silent> <space>k :TmuxNavigateUp<cr>
 
 "}}}
 
@@ -471,7 +476,9 @@ nnoremap <leader>ev         :edit $MYVIMRC<cr>
 " Source init.vim
 nnoremap <leader>sv         :source $MYVIMRC<cr>
 "select all
-nnoremap <C-a> gg<S-v>G
+nnoremap <space>a gg<S-v>G
+" buffer all delete
+nnoremap <S-q> :bufdo bwipeout<cr>
 
 augroup formatter
   autocmd!
@@ -481,4 +488,19 @@ augroup formatter
   " autocmd TextChanged,InsertLeave *.c,*.h :ClangFormat
   autocmd BufWritePre *.c,*.h :ClangFormat
 augroup END
+
+nnoremap   <silent>   <F8>   :FloatermNew ranger<cr>
+nnoremap   <silent>   <F8>   <C-\><C-n>:FloatermNew ranger<cr>
+nnoremap   <silent>   <F9>   :FloatermNext<cr>
+tnoremap   <silent>   <F9>   <C-\><C-n>:FloatermNext<cr>
+nnoremap   <silent>   <F10>   :FloatermToggle<CR>
+tnoremap   <silent>   <F10>   <C-\><C-n>:FloatermToggle<CR>
+
+let g:floaterm_autoinsert=1
+let g:floaterm_width=0.9
+let g:floaterm_height=0.9
+let g:floaterm_wintitle=0
+let g:floaterm_autoclose=180
+
+
 "}}}
