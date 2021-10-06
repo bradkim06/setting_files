@@ -29,7 +29,6 @@ else
   let $GIT_SSL_NO_VERIFY = 'true'
 endif
 
-Plug 'vim-airline/vim-airline'                          " airline status bar
 " My plugins
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-github-dashboard'
@@ -38,14 +37,14 @@ Plug 'junegunn/vim-emoji'
   command! -range EmojiReplace <line1>,<line2>s/:\([^:]\+\):/\=emoji#for(submatch(1), submatch(0))/g
 
 Plug 'junegunn/vim-pseudocl'
-Plug 'junegunn/vim-slash'
-  if has('timers')
-    noremap <expr> <plug>(slash-after) slash#blink(2, 50)
-  endif
+"Plug 'junegunn/vim-slash'
+"  if has('timers')
+"    noremap <expr> <plug>(slash-after) slash#blink(2, 50)
+"  endif
 
 Plug 'junegunn/vim-cfr'
 Plug 'junegunn/vim-fnr'
-Plug 'junegunn/vim-peekaboo'
+Plug 'junegunn/vim-Peekaboo'
 Plug 'junegunn/vim-journal'
 Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/gv.vim'
@@ -94,9 +93,11 @@ Plug 'nightsense/cosmic_latte'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-endwise'
+
 Plug 'tpope/vim-commentary'
-  map  gc  <Plug>Commentary
-  nmap gcc <Plug>CommentaryLine
+autocmd FileType c,cpp setlocal commentstring=//\ %s
+map  gc  <Plug>Commentary
+nmap gcc <Plug>CommentaryLine
 
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
   let g:undotree_WindowLayout = 2
@@ -201,6 +202,7 @@ endif
 Plug 'kdheepak/lazygit.nvim'
 Plug 'rhysd/vim-clang-format'
 Plug 'vhdirk/vim-cmake'
+Plug 'vim-airline/vim-airline'                          " airline status bar
 
 " Lint
 " Plug 'w0rp/ale'
@@ -250,7 +252,7 @@ set clipboard=unnamed
 set foldlevelstart=99
 set grepformat=%f:%l:%c:%m,%f:%l:%m
 set completeopt=menuone,preview
-set nocursorline
+" set nocursorline
 set nrformats=hex
 silent! set cryptmethod=blowfish2
 
@@ -1635,7 +1637,7 @@ nnoremap <silent> <Leader>C        :Colors!<CR>
 nnoremap <silent> <Leader><Enter>  :Buffers!<CR>
 nnoremap <silent> <Leader>L        :Lines!<CR>
 nnoremap <silent> <Leader>ag       :Ag! <C-R><C-W><CR>
-nnoremap <silent> <Leader>AG       :Ag! <C-R><C-A><CR>
+" nnoremap <silent> <Leader>AG       :Ag! <C-R><C-A><CR>
 xnoremap <silent> <Leader>ag       y:Ag! <C-R>"<CR>
 nnoremap <silent> <Leader>/        :Ag!<CR>
 nnoremap <silent> <Leader>`        :Marks!<CR>
@@ -1771,13 +1773,16 @@ nnoremap <F2> :LazyGit<cr>
 nnoremap <F3> :CMake<cr>
 
 " Airline
+let g:airline#extensions#searchcount#enabled = 1
+let g:airline#extensions#fugitiveline#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_min_count = 1   " show tabline only if there is more than 1 buffer
 let g:airline#extensions#tabline#fnamemod = ':t'        " show only file name on tabs
 
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
-nnoremap <S-q> :bufdo bwipeout<cr>
+command! BufOnly silent! execute "%bd|e#|bd#"
+nnoremap <S-q> :BufOnly<cr>
 nnoremap <silent> <leader>lg :LazyGit<cr>
 
 " format with available file format formatter
@@ -1793,3 +1798,5 @@ let g:markdown_fenced_languages = [
       \ 'vim',
       \ 'help'
       \]
+
+nnoremap <F4> :wa<cr>
