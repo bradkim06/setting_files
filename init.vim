@@ -18,6 +18,7 @@ silent! if plug#begin('~/.vim/plugged')
 " Plug 'Shougo/deoplete.nvim'
 " Plug 'sbdchd/neoformat'
 " Plug 'dense-analysis/ale'
+Plug 'buoto/gotests-vim'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
@@ -283,8 +284,9 @@ nnoremap p "+p
 " }}}
 " ============================================================================
 "
-let g:python_host_prog='/usr/bin/python2'
-let g:python3_host_prog='/usr/bin/python3'
+" let g:python_host_prog='/usr/bin/python2'
+let g:python3_host_prog='/opt/homebrew/bin/python3'
+let g:loaded_perl_provider = 0
 
 " ============================================================================
 " ALE {{{
@@ -524,3 +526,4 @@ function! RenameFile()
     endif
 endfunction
 map <leader>n :call RenameFile()<cr>
+let g:gotests_bin = '/opt/homebrew/bin/gotests'
