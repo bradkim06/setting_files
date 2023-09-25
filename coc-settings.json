@@ -1,19 +1,27 @@
 {
+  "colors.enable": true,
+
   "suggest.autoTrigger": "always",
-  "coc.preferences.formatOnSaveFiletypes": ["*"],
-  "prettier.tabWidth": 2,
+
+  // "coc.preferences.formatOnSave": true,
+  // "coc.preferences.formatOnType": true,
+
   "prettier.printWidth": 80,
-  "snippets.extends": { "cpp": ["c"] },
-  "languageserver": {
-    "ccls": {
-      "command": "ccls",
-      "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
-      "rootPatterns": [".ccls", "compile_commands.json", ".git/", ".hg/"],
-      "initializationOptions": {
-        "cache": {
-          "directory": "/tmp/ccls"
-        }
-      }
-    }
-  }
+  "prettier.enable": true,
+  "snippets.extends": {
+    "cpp": ["c", "cpp"]
+  },
+
+  "clangd.path": "/usr/bin/clangd",
+  "clangd.checkUpdates": true,
+  "clangd.fallbackFlags": ["-std=c++17"],
+  // "clangd.fallbackFlags": ["-std=c++17 -Wno-unknown-warning-option"],
+  // "clangd.arguments": ["--header-insertion=never"],
+
+  "markdownlint.config": {
+    "spelling": true,
+    "language": true
+  },
+
+  "snippets.ultisnips.pythonPrompt": false
 }
