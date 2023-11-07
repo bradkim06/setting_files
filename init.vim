@@ -1,138 +1,26 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vimrc of bradkim06
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Vimscript file settings folderble
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
 " With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
 let mapleader      = ' '
 let maplocalleader = ' '
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plug-In
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-silent! if plug#begin('~/.vim/plugged')
-Plug 'martinlroth/vim-devicetree'
-Plug 'tpope/vim-surround'
-Plug 'sheerun/vim-polyglot'
-" Plug 'mhinz/vim-startify'
-Plug 'jiangmiao/auto-pairs'
-Plug 'vim-test/vim-test'
-Plug 'sainnhe/everforest'
-Plug 'vim-autoformat/vim-autoformat'
-Plug 'ilyachur/cmake4vim'
-" Plug 'puremourning/vimspector'
-Plug 'vim-scripts/DoxygenToolkit.vim'
-Plug 'madox2/vim-ai'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => formatter
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'google/vim-maktaba'
-Plug 'google/vim-codefmt'
-
-augroup autoformat_settings
-  autocmd FileType bzl AutoFormatBuffer buildifier
-  autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
-  autocmd FileType dart AutoFormatBuffer dartfmt
-  autocmd FileType go AutoFormatBuffer gofmt
-  autocmd FileType gn AutoFormatBuffer gn
-  autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
-  autocmd FileType java AutoFormatBuffer google-java-format
-  autocmd FileType python AutoFormatBuffer yapf
-  " Alternative: autocmd FileType python AutoFormatBuffer autopep8
-  autocmd FileType rust AutoFormatBuffer rustfmt
-  autocmd FileType vue AutoFormatBuffer prettier
-  autocmd FileType swift AutoFormatBuffer swift-format
-  autocmd FileType sh AutoFormatBuffer shfmt
-augroup END
-
-" Plug 'rhysd/vim-clang-format'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc nvim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use release branch (recommended)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => junegunn
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" general-purpose command-line fuzzy finder
-Plug 'junegunn/fzf', { 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-peekaboo'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vim-airline plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => highlighting
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enhanced C and C++ syntax highlighting
-Plug 'bfrg/vim-cpp-modern'
-
-" additional vim c++ syntax highlighting
-Plug 'octol/vim-cpp-enhanced-highlight'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => colorscheme
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'sainnhe/sonokai'
-" Plug 'lifepillar/vim-gruvbox8'
-Plug 'morhetz/gruvbox'
-Plug 'rebelot/kanagawa.nvim'
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-Plug 'joshdick/onedark.vim'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => beauty
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" icon diplay
-Plug 'ryanoasis/vim-devicons'
-" Scroll Bar
-" Plug 'sslivkoff/vim-scroll-barnacle'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => rainbow plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'luochen1990/rainbow'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vim-commentary plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'tpope/vim-commentary'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => lazygit.nvim plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'kdheepak/lazygit.nvim'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => nerd tree
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'preservim/nerdtree'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => markdown
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
-
-call plug#end()
-endif
-
-" ============================================================================
 " BASIC SETTINGS {{{
 " ============================================================================
+
+syntax on
+set background=dark
 set wildignorecase
 set hlsearch
 set encoding=utf-8
-" set fileencodings=utf-8
-set fileencodings=utf8,euc-kr
-" set fileencodings=utf-8
+set fileencodings=utf8
 
 set clipboard=unnamed
 set nu
@@ -263,74 +151,138 @@ function! RenameFile()
 endfunction
 map <leader>n :call RenameFile()<cr>
 
-
-" compile c++
-function! CompileCPP()
-    let build_name = expand('%:r')
-    let file_name = expand('%')
-    exec ':!clang++ -std=c++17 -O2 -Wno-unused-result -o ' . build_name . ' ' . file_name
-    exec ':term ./' . build_name
-endfunction
-
-" compile c
-function! CompileC()
-    let build_name = expand('%:r')
-    let file_name = expand('%')
-    exec ':!clang -std=c18 -O2 -Wno-unused-result -o ' . build_name . ' ' . file_name
-    exec ':term ./' . build_name
-endfunction
-
-" nnoremap <F3> :call CompileCPP()<cr>
 nnoremap <F3> :!west build<cr>
-" nnoremap <F3> :!west build -b nrf52dk_nrf52832 -- -DCONFIG_COMPILER_SAVE_TEMPS=y<cr>
 nnoremap <F4> :!west flash<cr>
-" nnoremap <F4> :!west flash --erase --runner jlink<cr>
-" nnoremap <F4> :!./flash.sh<cr>
-
-
-" Auto Update Plug-In
-function! OnVimEnter() abort
-    " Run PlugUpdate every week automatically when entering Vim.
-    if exists('g:plug_home')
-        let l:filename = printf('%s/.vim_plug_update', g:plug_home)
-        if filereadable(l:filename) == 0
-            call writefile([], l:filename)
-        endif
-
-        let l:this_week = strftime('%Y_%V')
-        let l:contents = readfile(l:filename)
-        if index(l:contents, l:this_week) < 0
-            call execute('PlugUpdate')
-            call writefile([l:this_week], l:filename, 'a')
-        endif
-    endif
-endfunction
-
-autocmd VimEnter * call OnVimEnter()
-
-" nnoremap <F3> :!ceedling clean && ceedling logging test:'%'<cr>
-" nnoremap <F4> :!ceedling clean && ceedling logging gcov:'%' utils:gcov<cr>
+"
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => nerd tree
+" }}} BASIC SETTINGS
+
+" Plug-In {{{ 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <C-t> :NERDTreeToggle<CR>
+" Use silent! to suppress error messages if plug#begin() is not defined
+silent! if plug#begin('~/.vim/plugged')
 
-" Close the tab if NERDTree is the only window remaining in it.
-autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+" plug#newly {{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Simplify the creation of Doxygen comments in C, C++, Python
+Plug 'vim-scripts/DoxygenToolkit.vim'      
 
-" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-            \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+let g:DoxygenToolkit_authorName="bradkim06@gmail.com"
 
+" AI for Vim
+Plug 'madox2/vim-ai'                       
+
+" This prompt instructs model to work with syntax highlighting
+let s:initial_chat_prompt =<< trim END
+>>> system
+
+You are a general assistant.
+If you attach a code block add syntax type after ``` to enable syntax highlighting.
+END
+
+let g:vim_ai_complete = {
+\  "engine": "chat",
+\  "options": {
+\    "model": "gpt-4",
+\    "endpoint_url": "https://api.openai.com/v1/chat/completions",
+\    "max_tokens": 500,
+\    "temperature": 0.7,
+\    "request_timeout": 20,
+\    "enable_auth": 1,
+\    "selection_boundary": "",
+\    "initial_prompt": s:initial_chat_prompt,
+\  },
+\  "ui": {
+\    "paste_mode": 1,
+\  },
+\}
+
+let g:vim_ai_edit = {
+\  "engine": "chat",
+\  "options": {
+\    "model": "gpt-4",
+\    "endpoint_url": "https://api.openai.com/v1/chat/completions",
+\    "max_tokens": 500,
+\    "temperature": 0.7,
+\    "request_timeout": 20,
+\    "enable_auth": 1,
+\    "selection_boundary": "",
+\    "initial_prompt": s:initial_chat_prompt,
+\  },
+\  "ui": {
+\    "paste_mode": 1,
+\  },
+\}
+
+
+" edit text with a custom prompt
+xnoremap <leader>s :AIEdit check this c code for write comments, like a skilled Linux kernel C developer in Doxygen style.<CR>
+xnoremap <leader>c :AI Please write a commit message like a Linux kernel developer would.<CR>
+" xnoremap <C-R> :AIEdit check this c code for bugs and code smells, and Improve the variable names, write comments in doxygen style like a skilled Linux kernel C developer.<CR>
+xnoremap <C-R> :AIEdit add comments, and tidy up the vimscript code.<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc nvim
+" }}} plug#newly
+
+" plug#formatter {{{ 2
+" Plug command is used to manage plugins in Vim
+" Here we are adding two plugins: vim-maktaba and vim-codefmt from Google
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+
+" An augroup is used to define a group of autocommands that will be set up together
+" Here we are defining an augroup named autoformat_settings
+augroup autoformat_settings
+  " autocmd is used to execute commands automatically in response to certain events
+  " Here we are setting up autocommands for different file types to auto format buffer using different formatters
+
+  " For bzl file type, use buildifier formatter
+  autocmd FileType bzl AutoFormatBuffer buildifier
+
+  " For c, cpp, proto, javascript, arduino file types, use clang-format formatter
+  autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
+
+  " For dart file type, use dartfmt formatter
+  autocmd FileType dart AutoFormatBuffer dartfmt
+
+  " For go file type, use gofmt formatter
+  autocmd FileType go AutoFormatBuffer gofmt
+
+  " For gn file type, use gn formatter
+  autocmd FileType gn AutoFormatBuffer gn
+
+  " For html, css, sass, scss, less, json file types, use js-beautify formatter
+  autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+
+  " For java file type, use google-java-format formatter
+  autocmd FileType java AutoFormatBuffer google-java-format
+
+  " For python file type, use yapf formatter
+  " Alternatively, you can use autopep8 formatter for python file type
+  autocmd FileType python AutoFormatBuffer yapf
+  " Alternative: autocmd FileType python AutoFormatBuffer autopep8
+
+  " For rust file type, use rustfmt formatter
+  autocmd FileType rust AutoFormatBuffer rustfmt
+
+  " For vue file type, use prettier formatter
+  autocmd FileType vue AutoFormatBuffer prettier
+
+  " For swift file type, use swift-format formatter
+  autocmd FileType swift AutoFormatBuffer swift-format
+
+  " For sh file type, use shfmt formatter
+  autocmd FileType sh AutoFormatBuffer shfmt
+augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" language formatter
-let formatFiles = "*.json,*.go"
-execute "autocmd BufWritePre " . formatFiles . " call CocAction('format')"
-" autocmd BufWritePre *.markdown call CocAction('fixAll');
+" }}} plug#formatter
+
+" plug#coc.nvim {{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use release branch (recommended)
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Some servers have issues with backup files, see #649.
 set nobackup
@@ -372,8 +324,8 @@ endif
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <silent> [d <Plug>(coc-diagnostic-prev)
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent> <C-d> <Plug>(coc-definition)
@@ -404,38 +356,65 @@ nmap <leader>f  <Plug>(coc-fix-current)
 nmap <silent> <C-s> <Plug>(coc-range-select)
 xmap <silent> <C-s> <Plug>(coc-range-select)
 
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocActionAsync('format')
-
-" Mappings for CoCList
-" Show commands.
-" nnoremap <silent><nowait> <leader>c  :<C-u>CocList commands<cr>
 
 " navigate chunks of current buffer
-nmap [c <Plug>(coc-git-prevchunk)
-nmap ]c <Plug>(coc-git-nextchunk)
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
 
 nmap gi <Plug>(coc-git-chunkinfo)
 nmap gs <Plug>(coc-git-chunkStage)
 nmap gu <Plug>(coc-git-chunkUndo)
 
+" Show all diagnostics
+nnoremap <silent><nowait> <space>d  :<C-u>CocList diagnostics<cr>
+" Search workspace symbols
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+
+" coc-extensions
+
+" let g:coc_global_extensions = ['coc-clangd']
+
+" language formatter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Clang Format
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Define a variable to hold the file formats we want to auto format
+let formatFiles = "*.json,*.go"
+
+" Execute an auto command before saving the buffer
+" This command will call the 'format' action from CocAction for the specified file formats
+execute "autocmd BufWritePre " . formatFiles . " call CocAction('format')"
+
+" coc-snippet
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Clang-Format
-let g:clang_format#style_options = {
-            \ "SortIncludeds": "false",
-            \ "IndentWidth": 4,
-            \ "Standard" : "C++11"}
-" " map to <Leader>cf in C++ code
-" autocmd FileType c,cc,cpp nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
-" autocmd FileType c,cc,cpp vnoremap <buffer><Leader>cf :ClangFormat<CR>
-" autocmd FileType c,cc,cpp ClangFormatAutoEnable
-" " if you install vim-operator-user
-" autocmd FileType c,cc,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
-" " Toggle auto formatting:
-" nmap <Leader>C :ClangFormatAutoToggle<CR>
-" autocmd FileType c,cpp ClangFormatAutoEnable
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}} plug#coc.nvim
+
+" plug#junegunn {{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" general-purpose command-line fuzzy finder
+Plug 'junegunn/fzf', { 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-peekaboo'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf & fzf.vim plug-in
@@ -481,12 +460,16 @@ nnoremap <silent> <Leader>/        :Rg<CR>
 nnoremap <silent> <Leader>`        :Marks<CR>
 nnoremap <F1> :Maps<cr>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}} plug#junegunn
 
+" plug#vim-airline {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vim-airline plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
 " Theme
-let g:airline_theme='everforest'
+let g:airline_theme='gruvbox'
 " Lean & mean status/tabline for vim that's light as air.
 let g:airline#extensions#searchcount#enabled = 1
 let g:airline#extensions#fugitiveline#enabled = 1
@@ -495,9 +478,19 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => highlighting
+" }}} plug#vim-airline
+
+" plug#beauty {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-cpp-enhanced-highlight
+" A solid language pack for Vim
+Plug 'sheerun/vim-polyglot'                
+
+" Enhanced C and C++ syntax highlighting
+Plug 'bfrg/vim-cpp-modern'
+
+" additional vim c++ syntax highlighting
+Plug 'octol/vim-cpp-enhanced-highlight'
+
 " Enable highlighting of C++11 attributes
 let g:cpp_attributes_highlight = 1
 
@@ -508,226 +501,64 @@ let g:cpp_member_highlight = 1
 " (affects both C and C++ files)
 let g:cpp_simple_highlight = 1
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => colorscheme
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" The configuration options should be placed before `colorscheme sonokai`.
-let g:sonokai_style = 'espresso'
-let g:sonokai_enable_italic = 1
-let g:sonokai_spell_foreground = 'colored'
-let g:sonokai_diagnostic_text_highlight = 1
-let g:sonokai_diagnostic_line_highlight = 1
-let g:sonokai_diagnostic_virtual_text = 'colored'
-let g:sonokai_current_word = 'grey background'
-let g:sonokai_disable_italic_comment = 1
+" icon diplay
+Plug 'ryanoasis/vim-devicons'
 
+" Parentheses Rainbow Color
+Plug 'luochen1990/rainbow'
 
-" Set contrast.
-" This configuration option should be placed before `colorscheme everforest`.
-" Available values: 'hard', 'medium'(default), 'soft'
-" let g:everforest_background = 'hard'
-let g:everforest_cursor = 'auto'
-let g:everforest_current_word = 'underline'
-let g:everforest_diagnostic_text_highlight = 1
-let g:everforest_diagnostic_line_highlight = 1
-let g:everforest_diagnostic_virtual_text = 'colored'
-
-" For better performance
-let g:everforest_better_performance = 1
-
-syntax on
-" set background=dark
-colorscheme gruvbox
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => rainbow plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 " help you read complex code by showing diff level of parentheses in diff color
-"
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vim-commentary plug-in
+" }}} plug#beauty
+
+" plug#colorscheme {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'morhetz/gruvbox'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}} plug#colorscheme
+
+" plug#util {{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 'tpope/vim-commentary' is a plugin for commenting out lines of code
+Plug 'tpope/vim-commentary'
+
 " autocmd FileType c,cpp setlocal commentstring=/*\ %s
 map  gc  <Plug>Commentary
 nmap gcc <Plug>CommentaryLine
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => lazygit.nvim plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 'kdheepak/lazygit.nvim' is a plugin for integrating the lazygit terminal UI with Neovim
+Plug 'kdheepak/lazygit.nvim'
+
 nnoremap <F2> :LazyGit<cr>
 
+" 'preservim/nerdtree' is a plugin for exploring filesystems and to open files and directories
+Plug 'preservim/nerdtree'
+
+nnoremap <C-t> :NERDTreeToggle<CR>
+
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+            \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => startify
+" }}} plug#util
+
+" plug#markdown {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" returns all modified files of the current git repo
-" `2>/dev/null` makes the command fail quietly, so that when we are not
-" in a git repo, the list will be empty
-function! s:gitModified()
-    let files = systemlist('git ls-files -m 2>/dev/null')
-    return map(files, "{'line': v:val, 'path': v:val}")
-endfunction
-
-" same as above, but show untracked files, honouring .gitignore
-function! s:gitUntracked()
-    let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
-    return map(files, "{'line': v:val, 'path': v:val}")
-endfunction
-
-let g:startify_lists = [
-            \ { 'type': 'files',     'header': ['   MRU']            },
-            \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-            \ { 'type': 'sessions',  'header': ['   Sessions']       },
-            \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-            \ { 'type': function('s:gitModified'),  'header': ['   git modified']},
-            \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
-            \ { 'type': 'commands',  'header': ['   Commands']       },
-            \ ]
-
-
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => auto-pair
+" }}} plug#markdown
+
+" End of plug#begin block
+call plug#end()
+endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" let g:AutoPairsShortcutToggle = ''
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => auto-format
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" au BufWrite *.c,*.h :Autoformat
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => cmake4vim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" let g:cmake_usr_args = "-GNinja"
-" let g:cmake_build_target = "build.ninja"
-let g:cmake_compile_commands = 1
-let g:cmake_compile_commands_link = 1
-let g:cmake_build_executor_height = 20
-let g:cmake_build_dir_prefix = "build-"
-let g:cmake_build_type = "Debug"
-" let g:cmake_change_build_command = 1
-let g:cmake_kits = {
-            \"bradkim06": {
-            \"generator": "Ninja"
-            \} }
+" }}} Plug-In
 
-" autocmd BufWritePre *.markdown call CocAction('fixAll');
-autocmd VimEnter * :CMakeSelectKit bradkim06
-
-" coc-extensions
-" let g:coc_global_extensions = ['coc-clangd']
-
-" doxygen
-let g:DoxygenToolkit_authorName="bradkim06@gmail.com"
-
-" snippet
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
-
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-" Use <leader>x for convert visual selected code to snippet
-xmap <leader>x  <Plug>(coc-convert-snippet)
-
-" This prompt instructs model to work with syntax highlighting
-let s:initial_chat_prompt =<< trim END
->>> system
-
-You are a general assistant.
-If you attach a code block add syntax type after ``` to enable syntax highlighting.
-END
-
-let g:vim_ai_complete = {
-\  "engine": "chat",
-\  "options": {
-\    "model": "gpt-4",
-\    "endpoint_url": "https://api.openai.com/v1/chat/completions",
-\    "max_tokens": 1000,
-\    "temperature": 0.1,
-\    "request_timeout": 20,
-\    "enable_auth": 1,
-\    "selection_boundary": "",
-\    "initial_prompt": s:initial_chat_prompt,
-\  },
-\  "ui": {
-\    "paste_mode": 1,
-\  },
-\}
-
-let g:vim_ai_edit = {
-\  "engine": "chat",
-\  "options": {
-\    "model": "gpt-4",
-\    "endpoint_url": "https://api.openai.com/v1/chat/completions",
-\    "max_tokens": 1000,
-\    "temperature": 0.1,
-\    "request_timeout": 20,
-\    "enable_auth": 1,
-\    "selection_boundary": "",
-\    "initial_prompt": s:initial_chat_prompt,
-\  },
-\  "ui": {
-\    "paste_mode": 1,
-\  },
-\}
-
-
-let g:vim_ai_debug=1
-" edit text with a custom prompt
-xnoremap <leader>s :AIEdit check this c code for write comments, like a skilled Linux kernel C developer in Doxygen style.<CR>
-xnoremap <leader>c :AI Please write a commit message like a Linux kernel developer would.<CR>
-xnoremap <C-R> :AIEdit check this c code for bugs and code smells, and Improve the variable names, write comments in doxygen style like a skilled Linux kernel C developer.<CR>
-
-
-" YcmCompleter
-" let g:ycm_show_detailed_diag_in_popup=1
-" let g:ycm_enable_semantic_highlighting=1
-" let g:ycm_confirm_extra_conf = 0
-" let g:ycm_collect_identifiers_from_tags_files = 1
-
-" function! Rename()
-"   let name = input('Input RefactorRename: ')
-"   :execute "YcmCompleter RefactorRename " . name
-" endfunction
-
-" nnoremap <C-d> :YcmCompleter GoTo<CR>
-" nnoremap gr :YcmCompleter GoToReferences<CR>
-" nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
-" nnoremap <leader>rn :call Rename()<CR>
-" nnoremap <leader>f :YcmCompleter FixIt<CR>
-" nmap <leader>yfw <Plug>(YCMFindSymbolInWorkspace)
-" nmap <leader>yfd <Plug>(YCMFindSymbolInDocument)
-
-" " Return to last edit position when opening files (You want this!)
-" autocmd BufReadPost *
-"      \ if line("'\"") > 0 && line("'\"") <= line("$") |
-"      \   exe "normal! g`\"" |
-"      \ endif
-
-" " Use homebrew's clangd
-" let g:ycm_clangd_binary_path = trim(system('brew --prefix llvm')).'/bin/clangd'
-
-" Show all diagnostics
-nnoremap <silent><nowait> <space>d  :<C-u>CocList diagnostics<cr>
-" Search workspace symbols
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-
-" BufRead,BufNewFile 이벤트가 발생할 때, 파일 확장자가 .dts 또는 .dtsi인 경우, 
-" 파일 유형을 'dts'로 설정합니다.
-au BufRead,BufNewFile *.dts,*.dtsi set filetype=dts
-
-" 파일 유형이 'dts'인 경우, 자동 들여쓰기(autoindent)를 설정합니다.
-autocmd FileType dts set autoindent
+colorscheme gruvbox
