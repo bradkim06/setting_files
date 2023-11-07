@@ -6,8 +6,6 @@
 let mapleader      = ' '
 let maplocalleader = ' '
 
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug-In
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -15,7 +13,7 @@ silent! if plug#begin('~/.vim/plugged')
 Plug 'martinlroth/vim-devicetree'
 Plug 'tpope/vim-surround'
 Plug 'sheerun/vim-polyglot'
-Plug 'mhinz/vim-startify'
+" Plug 'mhinz/vim-startify'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-test/vim-test'
 Plug 'sainnhe/everforest'
@@ -23,16 +21,37 @@ Plug 'vim-autoformat/vim-autoformat'
 Plug 'ilyachur/cmake4vim'
 " Plug 'puremourning/vimspector'
 Plug 'vim-scripts/DoxygenToolkit.vim'
+Plug 'madox2/vim-ai'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => formatter
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+
+augroup autoformat_settings
+  autocmd FileType bzl AutoFormatBuffer buildifier
+  autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
+  autocmd FileType dart AutoFormatBuffer dartfmt
+  autocmd FileType go AutoFormatBuffer gofmt
+  autocmd FileType gn AutoFormatBuffer gn
+  autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+  autocmd FileType java AutoFormatBuffer google-java-format
+  autocmd FileType python AutoFormatBuffer yapf
+  " Alternative: autocmd FileType python AutoFormatBuffer autopep8
+  autocmd FileType rust AutoFormatBuffer rustfmt
+  autocmd FileType vue AutoFormatBuffer prettier
+  autocmd FileType swift AutoFormatBuffer swift-format
+  autocmd FileType sh AutoFormatBuffer shfmt
+augroup END
+
+" Plug 'rhysd/vim-clang-format'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => coc nvim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use release branch (recommended)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Clang Format
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Plug 'rhysd/vim-clang-format'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => junegunn
@@ -62,7 +81,8 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " => colorscheme
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Plug 'sainnhe/sonokai'
-Plug 'lifepillar/vim-gruvbox8'
+" Plug 'lifepillar/vim-gruvbox8'
+Plug 'morhetz/gruvbox'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'joshdick/onedark.vim'
@@ -108,6 +128,7 @@ endif
 " BASIC SETTINGS {{{
 " ============================================================================
 set wildignorecase
+set hlsearch
 set encoding=utf-8
 " set fileencodings=utf-8
 set fileencodings=utf8,euc-kr
@@ -162,24 +183,22 @@ nnoremap <S-Tab> :bprevious<CR>
 " color
 " ============================================================================
 " Important!!
+
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
 "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
-
-if (empty($TMUX))
-    if (has("nvim"))
-        "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-        let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-    endif
-    "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-    "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-    " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-    if (has("termguicolors"))
-        set termguicolors
-    endif
+if (empty($TMUX) && getenv('TERM_PROGRAM') != 'Apple_Terminal')
+  if (has("nvim"))
+    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
+  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+  if (has("termguicolors"))
+    set termguicolors
+  endif
 endif
-
-" set notermguicolors
 
 
 if has('nvim')
@@ -229,7 +248,6 @@ map <silent> <leader><cr> :noh<cr>
 inoremap <F5> <C-R>=strftime("%Y-%m-%d")<cr>
 inoremap <F6> <C-R>=strftime("%Y-%m-%dT%H:%M:%S")<cr>
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -263,9 +281,11 @@ function! CompileC()
 endfunction
 
 " nnoremap <F3> :call CompileCPP()<cr>
-nnoremap <F3> :!west build -p -c<cr>
-" nnoremap <F4> :!west flash --erase<cr>
-nnoremap <F4> :!./flash.sh<cr>
+nnoremap <F3> :!west build<cr>
+" nnoremap <F3> :!west build -b nrf52dk_nrf52832 -- -DCONFIG_COMPILER_SAVE_TEMPS=y<cr>
+nnoremap <F4> :!west flash<cr>
+" nnoremap <F4> :!west flash --erase --runner jlink<cr>
+" nnoremap <F4> :!./flash.sh<cr>
 
 
 " Auto Update Plug-In
@@ -389,7 +409,7 @@ command! -nargs=0 Format :call CocActionAsync('format')
 
 " Mappings for CoCList
 " Show commands.
-nnoremap <silent><nowait> <leader>c  :<C-u>CocList commands<cr>
+" nnoremap <silent><nowait> <leader>c  :<C-u>CocList commands<cr>
 
 " navigate chunks of current buffer
 nmap [c <Plug>(coc-git-prevchunk)
@@ -415,12 +435,12 @@ let g:clang_format#style_options = {
 " autocmd FileType c,cc,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
 " " Toggle auto formatting:
 " nmap <Leader>C :ClangFormatAutoToggle<CR>
-autocmd FileType c,cpp ClangFormatAutoEnable
+" autocmd FileType c,cpp ClangFormatAutoEnable
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf & fzf.vim plug-in
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let $FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git/**' --glob '!build/**' --glob '!.idea'"
+let $FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git/**' --glob '!.idea'"
 
 let g:fzf_colors =
             \ { 'fg':      ['fg', 'Normal'],
@@ -516,8 +536,8 @@ let g:everforest_diagnostic_virtual_text = 'colored'
 let g:everforest_better_performance = 1
 
 syntax on
-set background=dark
-colorscheme everforest
+" set background=dark
+colorscheme gruvbox
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => rainbow plug-in
@@ -528,7 +548,7 @@ let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowTo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-commentary plug-in
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd FileType c,cpp setlocal commentstring=//\ %s
+" autocmd FileType c,cpp setlocal commentstring=/*\ %s
 map  gc  <Plug>Commentary
 nmap gcc <Plug>CommentaryLine
 
@@ -592,10 +612,122 @@ let g:cmake_kits = {
             \"generator": "Ninja"
             \} }
 
-
-
 " autocmd BufWritePre *.markdown call CocAction('fixAll');
 autocmd VimEnter * :CMakeSelectKit bradkim06
 
 " coc-extensions
-let g:coc_global_extensions = ['coc-clangd']
+" let g:coc_global_extensions = ['coc-clangd']
+
+" doxygen
+let g:DoxygenToolkit_authorName="bradkim06@gmail.com"
+
+" snippet
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+
+" This prompt instructs model to work with syntax highlighting
+let s:initial_chat_prompt =<< trim END
+>>> system
+
+You are a general assistant.
+If you attach a code block add syntax type after ``` to enable syntax highlighting.
+END
+
+let g:vim_ai_complete = {
+\  "engine": "chat",
+\  "options": {
+\    "model": "gpt-4",
+\    "endpoint_url": "https://api.openai.com/v1/chat/completions",
+\    "max_tokens": 1000,
+\    "temperature": 0.1,
+\    "request_timeout": 20,
+\    "enable_auth": 1,
+\    "selection_boundary": "",
+\    "initial_prompt": s:initial_chat_prompt,
+\  },
+\  "ui": {
+\    "paste_mode": 1,
+\  },
+\}
+
+let g:vim_ai_edit = {
+\  "engine": "chat",
+\  "options": {
+\    "model": "gpt-4",
+\    "endpoint_url": "https://api.openai.com/v1/chat/completions",
+\    "max_tokens": 1000,
+\    "temperature": 0.1,
+\    "request_timeout": 20,
+\    "enable_auth": 1,
+\    "selection_boundary": "",
+\    "initial_prompt": s:initial_chat_prompt,
+\  },
+\  "ui": {
+\    "paste_mode": 1,
+\  },
+\}
+
+
+let g:vim_ai_debug=1
+" edit text with a custom prompt
+xnoremap <leader>s :AIEdit check this c code for write comments, like a skilled Linux kernel C developer in Doxygen style.<CR>
+xnoremap <leader>c :AI Please write a commit message like a Linux kernel developer would.<CR>
+xnoremap <C-R> :AIEdit check this c code for bugs and code smells, and Improve the variable names, write comments in doxygen style like a skilled Linux kernel C developer.<CR>
+
+
+" YcmCompleter
+" let g:ycm_show_detailed_diag_in_popup=1
+" let g:ycm_enable_semantic_highlighting=1
+" let g:ycm_confirm_extra_conf = 0
+" let g:ycm_collect_identifiers_from_tags_files = 1
+
+" function! Rename()
+"   let name = input('Input RefactorRename: ')
+"   :execute "YcmCompleter RefactorRename " . name
+" endfunction
+
+" nnoremap <C-d> :YcmCompleter GoTo<CR>
+" nnoremap gr :YcmCompleter GoToReferences<CR>
+" nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
+" nnoremap <leader>rn :call Rename()<CR>
+" nnoremap <leader>f :YcmCompleter FixIt<CR>
+" nmap <leader>yfw <Plug>(YCMFindSymbolInWorkspace)
+" nmap <leader>yfd <Plug>(YCMFindSymbolInDocument)
+
+" " Return to last edit position when opening files (You want this!)
+" autocmd BufReadPost *
+"      \ if line("'\"") > 0 && line("'\"") <= line("$") |
+"      \   exe "normal! g`\"" |
+"      \ endif
+
+" " Use homebrew's clangd
+" let g:ycm_clangd_binary_path = trim(system('brew --prefix llvm')).'/bin/clangd'
+
+" Show all diagnostics
+nnoremap <silent><nowait> <space>d  :<C-u>CocList diagnostics<cr>
+" Search workspace symbols
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+" BufRead,BufNewFile 이벤트가 발생할 때, 파일 확장자가 .dts 또는 .dtsi인 경우, 
+" 파일 유형을 'dts'로 설정합니다.
+au BufRead,BufNewFile *.dts,*.dtsi set filetype=dts
+
+" 파일 유형이 'dts'인 경우, 자동 들여쓰기(autoindent)를 설정합니다.
+autocmd FileType dts set autoindent

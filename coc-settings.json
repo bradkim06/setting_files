@@ -3,8 +3,8 @@
 
   "suggest.autoTrigger": "always",
 
-  // "coc.preferences.formatOnSave": true,
-  // "coc.preferences.formatOnType": true,
+  "coc.preferences.formatOnSave": false,
+  "coc.preferences.formatOnType": false,
 
   "prettier.printWidth": 80,
   "prettier.enable": true,
@@ -15,13 +15,20 @@
   "clangd.path": "/usr/bin/clangd",
   "clangd.checkUpdates": true,
   "clangd.fallbackFlags": ["-std=c++17"],
-  // "clangd.fallbackFlags": ["-std=c++17 -Wno-unknown-warning-option"],
-  // "clangd.arguments": ["--header-insertion=never"],
+  "clangd.arguments": ["--header-insertion=never"],
+
+  "semanticTokens.enable": true,
+
+  // "semanticTokens.filetypes": ["*"],
+  // "coc.preferences.semanticTokensHighlights": false,
+  // "clangd.semanticHighlighting": true,
 
   "markdownlint.config": {
     "spelling": true,
-    "language": true
-  },
-
-  "snippets.ultisnips.pythonPrompt": false
+    "language": true,
+    "tables": true,
+    "line-length": {
+      "tables": false
+    }
+  }
 }
