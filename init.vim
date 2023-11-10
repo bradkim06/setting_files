@@ -1,22 +1,30 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " vimrc of bradkim06
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 
-" Vimscript file settings folderble
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-augroup END
+" lua require('basic')
+
+" " Vimscript file settings folderble
+" augroup filetype_vim
+"     autocmd!
+"     autocmd FileType vim setlocal foldmethod=marker
+" augroup END
 
 " With a map leader it's possible to do extra key combinations
 let mapleader      = ' '
 let maplocalleader = ' '
 
-" BASIC SETTINGS {{{
+" BASIC  {{{
 " ============================================================================
 
 syntax on
-set background=dark
+filetype plugin on
+set wildmode=full
+set hidden
+set incsearch
+" treat all numerals as decimal, regardless of whether they are padded with zeros.
+set nrformats=
+" set background=dark
 set wildignorecase
 set hlsearch
 set encoding=utf-8
@@ -27,20 +35,12 @@ set nu
 set ignorecase smartcase
 set tabstop=4
 set shiftwidth=4
-set expandtab smarttab
+set softtabstop=4
+set expandtab
 set mouse=a
 
 " 80 chars/line
-set textwidth=0
-
-" black hole register
-" nnoremap d "_d
-" xnoremap d "_d
-" xnoremap p "_dP
-
-" yank to clipboard
-nnoremap y "+y
-nnoremap p "+p
+set textwidth=80
 
 if exists('&colorcolumn')
     set colorcolumn=80
@@ -48,11 +48,12 @@ endif
 
 let g:python3_host_prog = '/opt/homebrew/bin/python3'
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " => Moving around, tabs, windows and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " MYVIMRC edit
 nnoremap <leader>ve         :edit $MYVIMRC<cr>
+nnoremap <leader>vl         :edit ~/.config/nvim/lua/basic.lua<cr>
 nnoremap <leader>vs         :source $MYVIMRC<cr>
 
 " Close all buffer except the curren
@@ -66,6 +67,36 @@ nnoremap <Leader>q :bd<CR>
 nnoremap <Tab> :bnext<CR>
 " move previous buffer
 nnoremap <S-Tab> :bprevious<CR>
+
+" ============================================================================
+" => Useful Mappings
+" ============================================================================
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
+
+" Remap Control+p to act as the Up arrow key in command-line mode
+cnoremap <C-p> <Up>
+
+" Remap Control+n to act as the Down arrow key in command-line mode
+cnoremap <C-n> <Down>
+
+" Search for the Current Selection (Redux)
+xnoremap * :<C-u>call <SID>SetSearchPattern()<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>SetSearchPattern()<CR>?<C-R>=@/<CR><CR>
+
+" 이 함수는 비주양행 모드에서 선택한 텍스트를 검색 패턴으로 설정합니다.
+function! s:SetSearchPattern()
+  " 현재 's' 레지스터 값을 임시 변수에 저장합니다.
+  let temp = getreg('s')
+
+  " 비주양행 모드에서 선택 영역을 's' 레지스터에 복사합니다.
+  norm! gv"sy
+
+  " 검색 패턴을 설정합니다. 이때, 특수 문자와 줄바꿈 문자를 이스케이프합니다.
+  let @/ = '\V' . substitute(escape(@s, '/\'), '\n', '\\n', 'g')
+
+  " 원래 's' 레지스터 값을 복원합니다.
+  let @s = temp
+endfunction
 
 " ============================================================================
 " color
@@ -123,9 +154,9 @@ else
                 \ '#add4fb', '#ffafaf', '#87d7d7', '#e4e4e4']
 endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " => Helper mapping
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " comfortable command mode
 " nnoremap ; :
 
@@ -136,9 +167,9 @@ map <silent> <leader><cr> :noh<cr>
 inoremap <F5> <C-R>=strftime("%Y-%m-%d")<cr>
 inoremap <F6> <C-R>=strftime("%Y-%m-%dT%H:%M:%S")<cr>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " => Helper functions
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " Change Current Filename
 function! RenameFile()
     let old_name = expand('%')
@@ -156,16 +187,20 @@ nnoremap <F4> :!west flash<cr>
 "
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} BASIC SETTINGS
 
 " Plug-In {{{ 1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " Use silent! to suppress error messages if plug#begin() is not defined
 silent! if plug#begin('~/.vim/plugged')
 
 " plug#newly {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
+Plug 'tpope/vim-surround'
+" universal set of defaults
+Plug 'tpope/vim-sensible'
+
 " Simplify the creation of Doxygen comments in C, C++, Python
 Plug 'vim-scripts/DoxygenToolkit.vim'      
 
@@ -187,7 +222,7 @@ let g:vim_ai_complete = {
 \  "options": {
 \    "model": "gpt-4",
 \    "endpoint_url": "https://api.openai.com/v1/chat/completions",
-\    "max_tokens": 500,
+\    "max_tokens": 4000,
 \    "temperature": 0.7,
 \    "request_timeout": 20,
 \    "enable_auth": 1,
@@ -204,7 +239,7 @@ let g:vim_ai_edit = {
 \  "options": {
 \    "model": "gpt-4",
 \    "endpoint_url": "https://api.openai.com/v1/chat/completions",
-\    "max_tokens": 500,
+\    "max_tokens": 4000,
 \    "temperature": 0.7,
 \    "request_timeout": 20,
 \    "enable_auth": 1,
@@ -216,14 +251,12 @@ let g:vim_ai_edit = {
 \  },
 \}
 
-
 " edit text with a custom prompt
 xnoremap <leader>s :AIEdit check this c code for write comments, like a skilled Linux kernel C developer in Doxygen style.<CR>
 xnoremap <leader>c :AI Please write a commit message like a Linux kernel developer would.<CR>
-" xnoremap <C-R> :AIEdit check this c code for bugs and code smells, and Improve the variable names, write comments in doxygen style like a skilled Linux kernel C developer.<CR>
-xnoremap <C-R> :AIEdit add comments, and tidy up the vimscript code.<CR>
+xnoremap <C-R> :AIEdit check this c code for bugs and code smells, and Improve the variable names, write comments in doxygen style like a skilled Linux kernel C developer.<CR>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#newly
 
 " plug#formatter {{{ 2
@@ -276,11 +309,11 @@ augroup autoformat_settings
   " For sh file type, use shfmt formatter
   autocmd FileType sh AutoFormatBuffer shfmt
 augroup END
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#formatter
 
 " plug#coc.nvim {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " Use release branch (recommended)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -328,8 +361,8 @@ nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
-nmap <silent> <C-d> <Plug>(coc-definition)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent> <leader>d <Plug>(coc-definition)
+nmap <silent> <leader>r <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call ShowDocumentation()<CR>
@@ -361,12 +394,12 @@ xmap <silent> <C-s> <Plug>(coc-range-select)
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
 
-nmap gi <Plug>(coc-git-chunkinfo)
-nmap gs <Plug>(coc-git-chunkStage)
-nmap gu <Plug>(coc-git-chunkUndo)
+"nmap gi <Plug>(coc-git-chunkinfo)
+"nmap gs <Plug>(coc-git-chunkStage)
+"nmap gu <Plug>(coc-git-chunkUndo)
 
 " Show all diagnostics
-nnoremap <silent><nowait> <space>d  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <space>l  :<C-u>CocList diagnostics<cr>
 " Search workspace symbols
 nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 
@@ -375,7 +408,7 @@ nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 " let g:coc_global_extensions = ['coc-clangd']
 
 " language formatter
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocActionAsync('format')
 
@@ -387,7 +420,7 @@ let formatFiles = "*.json,*.go"
 execute "autocmd BufWritePre " . formatFiles . " call CocAction('format')"
 
 " coc-snippet
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " Use <C-l> for trigger snippet expand.
 imap <C-l> <Plug>(coc-snippets-expand)
 
@@ -406,19 +439,19 @@ imap <C-j> <Plug>(coc-snippets-expand-jump)
 " Use <leader>x for convert visual selected code to snippet
 xmap <leader>x  <Plug>(coc-convert-snippet)
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#coc.nvim
 
 " plug#junegunn {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " general-purpose command-line fuzzy finder
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-peekaboo'
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " => fzf & fzf.vim plug-in
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 let $FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git/**' --glob '!.idea'"
 
 let g:fzf_colors =
@@ -454,17 +487,16 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 
 nnoremap <silent> <Leader>b        :Buffers<CR>
 nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
-nnoremap <silent> <Leader>L        :Lines<CR>
 nnoremap <silent> <Leader>ag       :Rg <C-R><C-W><CR>
 nnoremap <silent> <Leader>/        :Rg<CR>
 nnoremap <silent> <Leader>`        :Marks<CR>
 nnoremap <F1> :Maps<cr>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#junegunn
 
 " plug#vim-airline {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
@@ -477,11 +509,11 @@ let g:airline#extensions#tabline#enabled = 1
 " show only file name on tabs
 let g:airline#extensions#tabline#fnamemod = ':t'
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#vim-airline
 
 " plug#beauty {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " A solid language pack for Vim
 Plug 'sheerun/vim-polyglot'                
 
@@ -510,18 +542,18 @@ Plug 'luochen1990/rainbow'
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 " help you read complex code by showing diff level of parentheses in diff color
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#beauty
 
 " plug#colorscheme {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 Plug 'morhetz/gruvbox'
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#colorscheme
 
 " plug#util {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " 'tpope/vim-commentary' is a plugin for commenting out lines of code
 Plug 'tpope/vim-commentary'
 
@@ -546,19 +578,19 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
             \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#util
 
 " plug#markdown {{{
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} plug#markdown
 
 " End of plug#begin block
 call plug#end()
 endif
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ============================================================================
 " }}} Plug-In
 
 colorscheme gruvbox
