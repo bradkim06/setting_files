@@ -3,8 +3,11 @@
 
   "suggest.autoTrigger": "always",
 
-  "coc.preferences.formatOnSave": false,
-  "coc.preferences.formatOnType": false,
+  // options for {Scope: `language-overridable}
+  "[markdown][lua][c]": {
+    "coc.preferences.formatOnSave": true,
+    "coc.preferences.formatOnType": true
+  },
 
   "prettier.printWidth": 80,
   "prettier.enable": true,
@@ -18,11 +21,6 @@
   "clangd.arguments": ["--header-insertion=never"],
 
   "semanticTokens.enable": true,
-
-  // "semanticTokens.filetypes": ["*"],
-  // "coc.preferences.semanticTokensHighlights": false,
-  // "clangd.semanticHighlighting": true,
-
   "markdownlint.config": {
     "spelling": true,
     "language": true,
@@ -30,5 +28,9 @@
     "line-length": {
       "tables": false
     }
-  }
+  },
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.workspace.library": [
+    "/opt/homebrew/Cellar/neovim/0.9.4/share/nvim/runtime"
+  ]
 }
